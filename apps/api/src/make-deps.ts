@@ -3,6 +3,7 @@ import type { Env } from './env'
 import { createDb } from './db/client'
 import { HttpError } from './lib/http-error'
 import { DrizzleQuizRepository } from './repositories/drizzle/quiz-repository'
+import { DrizzleSubmissionRepository } from './repositories/drizzle/submission-repository'
 
 const notImplemented = <T extends object>(name: string): T =>
   new Proxy({} as T, {
@@ -16,7 +17,7 @@ export function makeDeps(env: Env): AppDeps {
   const { db, close } = createDb(env.HYPERDRIVE.connectionString)
   return {
     quizRepo: new DrizzleQuizRepository(db),
-    submissionRepo: notImplemented('submissionRepo'),
+    submissionRepo: new DrizzleSubmissionRepository(db),
     leadQueryRepo: notImplemented('leadQueryRepo'),
     questionAdminRepo: notImplemented('questionAdminRepo'),
     verifyToken: async () => {

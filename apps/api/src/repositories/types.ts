@@ -51,9 +51,19 @@ export interface SubmissionRepository {
   saveSubmission(data: NewSubmission): Promise<{ submissionId: string; leadId: string }>
 }
 
+/** Agregados crus dos leads (cada lead conta pelo envio mais recente). */
+export type LeadStatsRow = {
+  total: number
+  averageScore: number | null
+  byBand: { slug: string; label: string; count: number }[]
+  /** Leads cadastrados por dia (no fuso pedido) desde `since`; dias sem lead não aparecem. */
+  byDay: { date: string; count: number }[]
+}
+
 export interface LeadQueryRepository {
   listLeads(query: LeadListQuery): Promise<{ items: LeadListItem[]; total: number }>
   getLeadDetail(id: string): Promise<LeadDetail | null>
+  getStatsRow(opts: { timeZone: string; since: Date }): Promise<LeadStatsRow>
 }
 
 export type QuestionState = {

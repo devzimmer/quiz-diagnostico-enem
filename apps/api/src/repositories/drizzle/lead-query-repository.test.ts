@@ -103,4 +103,34 @@ describe('DrizzleLeadQueryRepository', () => {
   it('detalhe de id inexistente → null', async () => {
     expect(await repo.getLeadDetail('00000000-0000-4000-8000-000000000099')).toBeNull()
   })
+
+  it('agregados: total, média, faixas e leads por dia no fuso de São Paulo', async () => {
+    // 02:00 UTC de 20/11 ainda é 19/11 em São Paulo
+    await client.query(
+      `update leads set created_at = '2026-11-20T02:00:00Z' where email = 'carla@email.com'`,
+    )
+    await client.query(
+      `update leads set created_at = '2026-11-20T12:00:00Z' where email <> 'carla@email.com'`,
+    )
+    const stats = await repo.getStatsRow({
+      timeZone: 'America/Sao_Paulo',
+      since: new Date('2026-11-01T00:00:00Z'),
+    })
+    expect(stats.total).toBe(3)
+    expect(stats.averageScore).toBeCloseTo(50) // (40 + 20 + 90) / 3, último envio de cada lead
+    expect(stats.byBand.map((b) => [b.slug, b.count]).sort()).toEqual([
+      ['em-construcao', 1],
+      ['ponto-de-partida', 1],
+      ['reta-final', 1],
+    ])
+    expect(stats.byDay).toEqual([
+      { date: '2026-11-19', count: 1 },
+      { date: '2026-11-20', count: 2 },
+    ])
+    const recent = await repo.getStatsRow({
+      timeZone: 'America/Sao_Paulo',
+      since: new Date('2026-11-20T10:00:00Z'),
+    })
+    expect(recent.byDay).toEqual([{ date: '2026-11-20', count: 2 }])
+  })
 })

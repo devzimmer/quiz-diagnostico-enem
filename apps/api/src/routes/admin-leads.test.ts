@@ -28,6 +28,7 @@ function setup() {
   const leadQueryRepo: LeadQueryRepository = {
     listLeads: vi.fn(async (_q: LeadListQuery) => ({ items: [item], total: 41 })),
     getLeadDetail: vi.fn(async (id: string) => (id === LEAD_ID ? detail : null)),
+    getStatsRow: vi.fn(),
   }
   const app = createApp(() => makeFakeDeps({ leadQueryRepo, verifyToken: fakeVerifyToken }))
   return { app, leadQueryRepo }
@@ -85,5 +86,37 @@ describe('GET /api/v1/admin/leads/:id', () => {
     const res = await app.request('/api/v1/admin/leads/abc', { headers: authHeader })
     expect(res.status).toBe(404)
     expect(leadQueryRepo.getLeadDetail).not.toHaveBeenCalled()
+  })
+})
+
+describe('GET /api/v1/admin/leads/export.csv', () => {
+  it('exporta todos os leads filtrados em CSV para Excel', async () => {
+    const { app, leadQueryRepo } = setup()
+    const res = await app.request('/api/v1/admin/leads/export.csv?search=ana&band=bom-caminho', {
+      headers: authHeader,
+    })
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toBe('text/csv; charset=utf-8')
+    expect(res.headers.get('content-disposition')).toMatch(
+      /^attachment; filename="leads-\d{4}-\d{2}-\d{2}\.csv"$/,
+    )
+    expect(leadQueryRepo.listLeads).toHaveBeenCalledWith({
+      search: 'ana',
+      band: 'bom-caminho',
+      page: 1,
+      pageSize: 10_000,
+    })
+    const bytes = new Uint8Array(await res.arrayBuffer())
+    expect([...bytes.slice(0, 3)]).toEqual([0xef, 0xbb, 0xbf]) // BOM: Excel lê como UTF-8
+    const text = new TextDecoder().decode(bytes) // decodificar já remove o BOM
+    expect(text.split('\r\n')).toEqual([
+      'Nome;E-mail;Telefone;Pontuação;Faixa;Cadastro',
+      'Ana Souza;ana@email.com;(11) 98765-4321;64;Bom caminho;27/11/2026 14:32',
+      '',
+    ])
+  })
+
+  it('exige admin', async () => {
+    expect((await setup().app.request('/api/v1/admin/leads/export.csv')).status).toBe(401)
   })
 })

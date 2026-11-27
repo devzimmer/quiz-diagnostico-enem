@@ -1,4 +1,7 @@
 import { sql } from 'drizzle-orm'
+
+// RLS habilitado em todas as tabelas, sem políticas: o schema public fica inacessível pela API
+// REST do Supabase (chaves anon/authenticated). A API (Worker) conecta como dono das tabelas.
 import {
   type AnyPgColumn,
   boolean,
@@ -30,7 +33,7 @@ export const quizzes = pgTable(
       .on(t.isActive)
       .where(sql`is_active`),
   ],
-)
+).enableRLS()
 
 export const questions = pgTable(
   'questions',
@@ -56,7 +59,7 @@ export const questions = pgTable(
     check('questions_active_matches_deactivated', sql`is_active = (deactivated_at IS NULL)`),
     index('questions_previous_version_idx').on(t.previousVersionId),
   ],
-)
+).enableRLS()
 
 export const options = pgTable(
   'options',
@@ -73,7 +76,7 @@ export const options = pgTable(
     unique('options_question_position_uq').on(t.questionId, t.position),
     check('options_weight_range', sql`weight BETWEEN 0 AND 100`),
   ],
-)
+).enableRLS()
 
 export const resultBands = pgTable(
   'result_bands',
@@ -92,7 +95,7 @@ export const resultBands = pgTable(
     unique('result_bands_quiz_slug_uq').on(t.quizId, t.slug),
     check('result_bands_range', sql`min_score <= max_score`),
   ],
-)
+).enableRLS()
 
 export const leads = pgTable(
   'leads',
@@ -110,7 +113,7 @@ export const leads = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [index('leads_created_at_idx').on(t.createdAt.desc())],
-)
+).enableRLS()
 
 export const submissions = pgTable(
   'submissions',
@@ -135,7 +138,7 @@ export const submissions = pgTable(
     check('submissions_score_range', sql`score BETWEEN 0 AND 100`),
     index('submissions_lead_created_idx').on(t.leadId, t.createdAt.desc()),
   ],
-)
+).enableRLS()
 
 export const submissionAnswers = pgTable(
   'submission_answers',
@@ -160,4 +163,4 @@ export const submissionAnswers = pgTable(
     unique('submission_answers_submission_question_uq').on(t.submissionId, t.questionId),
     index('submission_answers_question_idx').on(t.questionId),
   ],
-)
+).enableRLS()

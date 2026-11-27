@@ -1,3 +1,4 @@
+import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as schema from './schema'
@@ -12,4 +13,5 @@ export function createDb(connectionString: string) {
   return { db, close: () => client.end({ timeout: 5 }) }
 }
 
-export type Db = ReturnType<typeof createDb>['db']
+/** Qualquer banco Drizzle com este schema (postgres.js no Worker, PGlite nos testes). */
+export type Database = PgDatabase<PgQueryResultHKT, typeof schema>

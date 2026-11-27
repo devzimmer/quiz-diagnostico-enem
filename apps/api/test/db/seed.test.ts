@@ -56,6 +56,14 @@ describe('migration + seed', () => {
     ).toEqual({ n: 1 })
   })
 
+  it('habilita RLS em todas as tabelas públicas (nada exposto pela API REST do Supabase)', async () => {
+    const { rows } = await client.query<{ tablename: string; rowsecurity: boolean }>(
+      `select tablename, rowsecurity from pg_tables where schemaname = 'public' order by tablename`,
+    )
+    expect(rows.length).toBe(7)
+    expect(rows.filter((r) => !r.rowsecurity).map((r) => r.tablename)).toEqual([])
+  })
+
   it('não permite duas perguntas ativas na mesma posição', async () => {
     await expect(
       client.query(`insert into questions (quiz_id, position, text)

@@ -59,11 +59,21 @@ describe('quizReducer', () => {
       ...quiz,
       questions: [{ ...quiz.questions[0]!, id: 'q1-v2' }, quiz.questions[1]!],
     }
+    // respostas descartadas: a tela avisa a pessoa (notice) em vez de recomeçar calada
     expect(quizReducer(s, { type: 'sync', quiz: changed })).toEqual({
       ...initialState,
       quizId: 'quiz-1',
+      notice: 'quiz-updated',
     })
     expect(quizReducer(s, { type: 'sync', quiz: { ...quiz, id: 'quiz-2' } }).answers).toEqual({})
+  })
+
+  it('sync sem respostas a descartar não gera aviso; dismissNotice limpa o aviso', () => {
+    expect(quizReducer(initialState, { type: 'sync', quiz }).notice).toBeNull()
+    const s = quizReducer(started, { type: 'answer', questionId: 'q1', optionId: 'q1a' })
+    const warned = quizReducer(s, { type: 'sync', quiz: { ...quiz, id: 'quiz-2' } })
+    expect(warned.notice).toBe('quiz-updated')
+    expect(quizReducer(warned, { type: 'dismissNotice' }).notice).toBeNull()
   })
 
   it('sync limita o passo ao total atual', () => {

@@ -56,6 +56,9 @@ export async function updateQuestion(
       'Esta pergunta está desativada. Reative-a para editar.',
     )
   }
+  // salvar sem mudanças não grava nada: não cria versão nem reinicia quem está respondendo
+  const current = (await repo.listActive(state.quizId)).find((q) => q.id === id)
+  if (current && sameContent(current, content)) return { question: current, versioned: false }
   if (state.answerCount > 0) {
     return { question: await repo.replaceWithNewVersion(id, content), versioned: true }
   }
@@ -105,4 +108,14 @@ export async function reorderQuestions(repo: Repo, ids: string[]): Promise<void>
     )
   }
   await repo.setOrder(quizId, ids)
+}
+
+function sameContent(current: AdminQuestion, next: QuestionContent): boolean {
+  return (
+    current.text === next.text &&
+    current.options.length === next.options.length &&
+    current.options.every(
+      (o, i) => o.text === next.options[i]!.text && o.weight === next.options[i]!.weight,
+    )
+  )
 }

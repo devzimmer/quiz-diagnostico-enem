@@ -2,10 +2,11 @@ import { ArrowRight, Clock, ListChecks, Target } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Logo } from '@/components/Logo'
 import { QuizShell } from '../components/QuizLayout'
+import { usePublicQuiz } from '../hooks'
+import { introCopy } from '../intro-copy'
 import { useQuizState } from '../QuizProvider'
 
-const ITEMS = [
-  { icon: ListChecks, text: '10 perguntas de múltipla escolha' },
+const FIXED_ITEMS = [
   { icon: Clock, text: 'Leva cerca de 2 minutos' },
   { icon: Target, text: 'Resultado na hora, com o que focar agora' },
 ]
@@ -13,6 +14,9 @@ const ITEMS = [
 export function IntroPage() {
   const { state, dispatch } = useQuizState()
   const inProgress = !state.result && Object.keys(state.answers).length > 0
+  // já busca o quiz aqui: o número de perguntas aparece e a próxima tela abre sem espera
+  const copy = introCopy(usePublicQuiz().data?.questions.length)
+  const items = [{ icon: ListChecks, text: copy.item }, ...FIXED_ITEMS]
 
   return (
     <QuizShell>
@@ -29,12 +33,11 @@ export function IntroPage() {
       </h1>
 
       <p className="mt-4 text-[17px] leading-relaxed text-tinta-2">
-        Responda 10 perguntas rápidas sobre a sua rotina de estudos e descubra em que ponto da
-        preparação você está.
+        {copy.lead} sobre a sua rotina de estudos e descubra em que ponto da preparação você está.
       </p>
 
       <ul className="mt-7 flex flex-col gap-3.5 rounded-[18px] border-[1.5px] border-azul-claro bg-white p-[18px] shadow-[0_8px_24px_rgba(11,42,91,0.06)]">
-        {ITEMS.map(({ icon: Icon, text }) => (
+        {items.map(({ icon: Icon, text }) => (
           <li key={text} className="flex items-center gap-3 text-[15px] font-medium">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-azul-claro text-azul-fundo">
               <Icon aria-hidden className="size-5" />

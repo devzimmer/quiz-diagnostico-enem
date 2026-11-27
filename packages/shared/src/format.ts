@@ -1,3 +1,5 @@
+import { normalizePhone } from './lead'
+
 const TIME_ZONE = 'America/Sao_Paulo'
 
 /** Máscara progressiva de telefone: `(11) 98765-4321` (celular) ou `(11) 3456-7890` (fixo). */
@@ -11,6 +13,12 @@ export function formatPhone(raw: string): string {
   const splitAt = digits.length === 11 ? 5 : 4
   return `(${ddd}) ${rest.slice(0, splitAt)}-${rest.slice(splitAt)}`
 }
+
+/**
+ * Valor do campo de telefone a cada mudança: normaliza antes de mascarar, para que colar ou
+ * autopreencher `+55 11 98765-4321` / `011987654321` não seja cortado nos 11 primeiros dígitos.
+ */
+export const maskPhoneInput = (raw: string): string => formatPhone(normalizePhone(raw))
 
 const dateTime = new Intl.DateTimeFormat('pt-BR', {
   timeZone: TIME_ZONE,

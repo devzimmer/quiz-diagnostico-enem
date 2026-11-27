@@ -142,9 +142,11 @@ function QuestionForm({
       },
     )
 
-  const onSubmit = form.handleSubmit((content) =>
-    createsVersion ? setPendingContent(content) : persist(content),
-  )
+  const onSubmit = form.handleSubmit((content) => {
+    // nada mudou: só fecha (salvar criaria uma versão idêntica)
+    if (!isNew && !isDirty) return onClose()
+    return createsVersion ? setPendingContent(content) : persist(content)
+  })
 
   const optionsError = errors.options?.message ?? errors.options?.root?.message
   const submitLabel = createsVersion ? 'Salvar nova versão' : isNew ? 'Criar pergunta' : 'Salvar'

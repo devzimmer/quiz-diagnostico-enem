@@ -70,28 +70,28 @@ Abra http://localhost:5173 para o quiz e http://localhost:5173/admin para o pain
 
 **API** (`apps/api`): `vars` no `wrangler.jsonc` e segredos no `.dev.vars` (local) ou `wrangler secret put` (produção).
 
-| Variável | Onde | Para quê |
-|---|---|---|
-| `HYPERDRIVE` | binding (`wrangler.jsonc`) | Conexão com o Postgres. Local: `localConnectionString`; produção: id do Hyperdrive criado no painel |
-| `SUPABASE_URL` | `vars` | Emissor dos tokens (`<url>/auth/v1`) e endereço do JWKS |
-| `SUPABASE_JWT_SECRET` | segredo | Verificação HS256 (Supabase local e projetos com chave legada). Sem ele, a API valida tokens assimétricos pelo JWKS |
-| `ALLOWED_ORIGINS` | `vars` | Origens liberadas no CORS, separadas por vírgula |
-| `SUBMISSION_LIMITER` | binding `ratelimits` | Rate limit do envio do quiz (5 por minuto por IP) |
+| Variável              | Onde                       | Para quê                                                                                                            |
+| --------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `HYPERDRIVE`          | binding (`wrangler.jsonc`) | Conexão com o Postgres. Local: `localConnectionString`; produção: id do Hyperdrive criado no painel                 |
+| `SUPABASE_URL`        | `vars`                     | Emissor dos tokens (`<url>/auth/v1`) e endereço do JWKS                                                             |
+| `SUPABASE_JWT_SECRET` | segredo                    | Verificação HS256 (Supabase local e projetos com chave legada). Sem ele, a API valida tokens assimétricos pelo JWKS |
+| `ALLOWED_ORIGINS`     | `vars`                     | Origens liberadas no CORS, separadas por vírgula                                                                    |
+| `SUBMISSION_LIMITER`  | binding `ratelimits`       | Rate limit do envio do quiz (5 por minuto por IP)                                                                   |
 
 **Web** (`apps/web/.env.local`):
 
-| Variável | Para quê |
-|---|---|
-| `VITE_API_URL` | Base da API. Vazio em dev (proxy do Vite); em produção, a URL do Worker |
-| `VITE_SUPABASE_URL` | URL do Supabase, usada só no login do painel |
-| `VITE_SUPABASE_ANON_KEY` | Chave pública (anon/publishable) do Supabase |
+| Variável                 | Para quê                                                                |
+| ------------------------ | ----------------------------------------------------------------------- |
+| `VITE_API_URL`           | Base da API. Vazio em dev (proxy do Vite); em produção, a URL do Worker |
+| `VITE_SUPABASE_URL`      | URL do Supabase, usada só no login do painel                            |
+| `VITE_SUPABASE_ANON_KEY` | Chave pública (anon/publishable) do Supabase                            |
 
 O quiz público não depende do Supabase no navegador: sem essas duas variáveis, só o login do painel fica indisponível (com aviso na tela).
 
 ## Acesso ao admin
 
-| E-mail | Senha |
-|---|---|
+| E-mail             | Senha         |
+| ------------------ | ------------- |
 | `admin@quiz.local` | `Admin@12345` |
 
 Criado pelo `supabase/seed.sql`, com `app_metadata.role = "admin"`. Vale só para ambiente local. O cadastro público está desligado no Supabase; novos usuários são criados pelo time de tecnologia.
@@ -99,7 +99,7 @@ Criado pelo `supabase/seed.sql`, com `app_metadata.role = "admin"`. Vale só par
 ## Testes e qualidade
 
 ```bash
-pnpm test        # 224 testes: shared 53, api 134, web 37
+pnpm test        # 235 testes: shared 59, api 136, web 40
 pnpm typecheck   # TypeScript strict nos três pacotes
 pnpm lint        # ESLint (typescript-eslint + react-hooks)
 ```
@@ -154,11 +154,11 @@ submission_answers id, submission_id, question_id, option_id,
 
 **Versionamento de perguntas:**
 
-| Ação | Pergunta sem respostas | Pergunta com respostas |
-|---|---|---|
-| Editar | altera a própria linha | cria nova versão na mesma posição (`previous_version_id`) e desativa a antiga |
-| Desativar | sai do quiz; posições se reorganizam | idem; nada é apagado |
-| Reativar | volta no fim da lista | idem (versões substituídas não reativam: são histórico) |
+| Ação      | Pergunta sem respostas               | Pergunta com respostas                                                        |
+| --------- | ------------------------------------ | ----------------------------------------------------------------------------- |
+| Editar    | altera a própria linha               | cria nova versão na mesma posição (`previous_version_id`) e desativa a antiga |
+| Desativar | sai do quiz; posições se reorganizam | idem; nada é apagado                                                          |
+| Reativar  | volta no fim da lista                | idem (versões substituídas não reativam: são histórico)                       |
 
 Tudo em transação. As FKs das respostas são `ON DELETE RESTRICT`, então nem o banco aceita apagar conteúdo já respondido. RLS ligado em todas as tabelas sem políticas: o acesso aos dados é só pela API (a chave anon do Supabase não lê nada).
 
@@ -166,22 +166,22 @@ Tudo em transação. As FKs das respostas são `ON DELETE RESTRICT`, então nem 
 
 Prefixo `/api/v1`. Rotas `/admin/*` exigem `Authorization: Bearer <token do Supabase>` com `app_metadata.role = "admin"` (sem token ou inválido → 401; sem papel → 403).
 
-| Rota | Descrição |
-|---|---|
-| `GET /quiz` | Quiz ativo **sem pesos** |
-| `POST /submissions` | Envia contato e respostas; devolve nota, faixa e resumo. 409 se o e-mail já respondeu (reenvio com `confirmReplace: true`), 422 validação ou quiz alterado, 429 rate limit |
-| `GET /admin/leads` | Lista com `search`, `band`, `page`, `pageSize` |
-| `GET /admin/leads/:id` | Detalhe com o último envio e as respostas com pontos |
-| `GET /admin/leads/export.csv` | CSV com os mesmos filtros |
-| `GET /admin/stats` | Indicadores do painel |
-| `GET /admin/quiz` | Resumo: pontuação máxima, contagens e faixas |
-| `GET /admin/quiz/questions?status=active\|inactive` | Perguntas com pesos e número de respostas |
-| `POST /admin/quiz/questions` | Cria no fim |
-| `PUT /admin/quiz/questions/:id` | Edita (`versioned: true` quando criou nova versão) |
-| `DELETE /admin/quiz/questions/:id` | Desativa (nunca a última ativa) |
-| `POST /admin/quiz/questions/:id/reactivate` | Reativa no fim |
-| `PUT /admin/quiz/question-order` | Nova ordem das ativas |
-| `GET /health` | Saúde |
+| Rota                                                | Descrição                                                                                                                                                                  |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /quiz`                                         | Quiz ativo **sem pesos**                                                                                                                                                   |
+| `POST /submissions`                                 | Envia contato e respostas; devolve nota, faixa e resumo. 409 se o e-mail já respondeu (reenvio com `confirmReplace: true`), 422 validação ou quiz alterado, 429 rate limit |
+| `GET /admin/leads`                                  | Lista com `search`, `band`, `page`, `pageSize`                                                                                                                             |
+| `GET /admin/leads/:id`                              | Detalhe com o último envio e as respostas com pontos                                                                                                                       |
+| `GET /admin/leads/export.csv`                       | CSV com os mesmos filtros                                                                                                                                                  |
+| `GET /admin/stats`                                  | Indicadores do painel                                                                                                                                                      |
+| `GET /admin/quiz`                                   | Resumo: pontuação máxima, contagens e faixas                                                                                                                               |
+| `GET /admin/quiz/questions?status=active\|inactive` | Perguntas com pesos e número de respostas                                                                                                                                  |
+| `POST /admin/quiz/questions`                        | Cria no fim                                                                                                                                                                |
+| `PUT /admin/quiz/questions/:id`                     | Edita (`versioned: true` quando criou nova versão)                                                                                                                         |
+| `DELETE /admin/quiz/questions/:id`                  | Desativa (nunca a última ativa)                                                                                                                                            |
+| `POST /admin/quiz/questions/:id/reactivate`         | Reativa no fim                                                                                                                                                             |
+| `PUT /admin/quiz/question-order`                    | Nova ordem das ativas                                                                                                                                                      |
+| `GET /health`                                       | Saúde                                                                                                                                                                      |
 
 Contrato completo (corpos, códigos de erro): [design do projeto, seção 9](docs/superpowers/specs/2026-11-27-quiz-diagnostico-enem-design.md#9-api-rest-prefixo-apiv1).
 

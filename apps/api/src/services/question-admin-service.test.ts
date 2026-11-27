@@ -42,6 +42,20 @@ describe('updateQuestion', () => {
     expect(result.question.position).toBe(2)
   })
 
+  it('conteúdo idêntico → nada é gravado nem versionado', async () => {
+    const q = repo.add({ answerCount: 12, text: content.text, options: content.options })
+    const result = await updateQuestion(repo, q.id, structuredClone(content))
+    expect(repo.calls).toEqual([])
+    expect(result.versioned).toBe(false)
+    expect(result.question.id).toBe(q.id)
+  })
+
+  it('mudar só o peso de uma alternativa conta como mudança', async () => {
+    const q = repo.add({ answerCount: 12, text: content.text, options: content.options })
+    const changed = { ...content, options: [{ text: 'Sim', weight: 9 }, content.options[1]!] }
+    expect((await updateQuestion(repo, q.id, changed)).versioned).toBe(true)
+  })
+
   it('pergunta inativa → 409 QUESTION_INACTIVE', async () => {
     const q = repo.add({ isActive: false })
     await expect(updateQuestion(repo, q.id, content)).rejects.toMatchObject({

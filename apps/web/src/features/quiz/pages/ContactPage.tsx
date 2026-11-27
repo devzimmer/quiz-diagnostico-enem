@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type LeadInput, leadInputSchema } from '@quiz/shared'
+import { useQueryClient } from '@tanstack/react-query'
+import { type LeadInput, leadInputSchema, maskPhoneInput } from '@quiz/shared'
 import { ArrowLeft, ArrowRight, Check, Loader2, Lock } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -9,12 +10,11 @@ import type { z } from 'zod'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { FieldError } from '@/components/ui/field'
 import { ApiError } from '@/lib/api-client'
-import { formatPhone } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { QuizShell } from '../components/QuizLayout'
 import { QuestionSkeleton, QuizLoadError } from '../components/QuizStates'
 import { useSubmitQuiz } from '../hooks'
-import { useSyncedQuiz } from '../useSyncedQuiz'
+import { QUIZ_UPDATED_MESSAGE, useSyncedQuiz } from '../useSyncedQuiz'
 
 type FormInput = z.input<typeof leadInputSchema>
 const FIELDS = ['name', 'email', 'phone'] as const
@@ -26,6 +26,7 @@ export function ContactPage() {
   const navigate = useNavigate()
   const { query, quiz, state, dispatch } = useSyncedQuiz()
   const submit = useSubmitQuiz()
+  const queryClient = useQueryClient()
   const [pendingLead, setPendingLead] = useState<LeadInput | null>(null)
 
   const form = useForm<FormInput, unknown, LeadInput>({
@@ -78,7 +79,9 @@ export function ContactPage() {
             }
             case 'QUIZ_OUTDATED':
               setPendingLead(null)
-              toast.info('O quiz foi atualizado. Vamos recomeçar com as perguntas novas.')
+              toast.info(QUIZ_UPDATED_MESSAGE, { id: 'quiz-updated' })
+              // descarta o quiz em cache: o recomeço precisa buscar as perguntas novas
+              queryClient.removeQueries({ queryKey: ['quiz'] })
               dispatch({ type: 'reset' })
               navigate('/', { replace: true })
               return
@@ -184,7 +187,7 @@ export function ContactPage() {
                   ref={field.ref}
                   value={field.value}
                   onBlur={field.onBlur}
-                  onChange={(e) => field.onChange(formatPhone(e.target.value))}
+                  onChange={(e) => field.onChange(maskPhoneInput(e.target.value))}
                 />
               )}
             />

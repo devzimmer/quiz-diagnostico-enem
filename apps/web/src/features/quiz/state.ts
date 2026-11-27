@@ -9,6 +9,8 @@ export type QuizState = {
   result: SubmissionResult | null
   /** Contato informado, para personalizar a tela de resultado. */
   lead: LeadContact | null
+  /** O conteúdo do quiz mudou e as respostas salvas foram descartadas: a tela avisa. */
+  notice: 'quiz-updated' | null
 }
 
 export type LeadContact = { name: string; phone: string }
@@ -20,6 +22,7 @@ export type QuizAction =
   | { type: 'back' }
   | { type: 'finish'; result: SubmissionResult; lead: LeadContact }
   | { type: 'reset' }
+  | { type: 'dismissNotice' }
 
 export const initialState: QuizState = {
   quizId: null,
@@ -27,6 +30,7 @@ export const initialState: QuizState = {
   answers: {},
   result: null,
   lead: null,
+  notice: null,
 }
 
 export const STORAGE_KEY = 'quiz-state-v1'
@@ -43,7 +47,8 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case 'sync': {
       const { quiz } = action
       if (state.quizId !== quiz.id || !answersFit(quiz, state.answers)) {
-        return { ...initialState, quizId: quiz.id }
+        const discarded = Object.keys(state.answers).length > 0 && !state.result
+        return { ...initialState, quizId: quiz.id, notice: discarded ? 'quiz-updated' : null }
       }
       const lastStep = Math.max(0, quiz.questions.length - 1)
       return { ...state, step: Math.min(state.step, lastStep) }
@@ -58,6 +63,8 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       return { ...state, result: action.result, lead: action.lead }
     case 'reset':
       return initialState
+    case 'dismissNotice':
+      return { ...state, notice: null }
   }
 }
 
@@ -83,7 +90,8 @@ export function loadState(storage: SessionStorageLike): QuizState {
   try {
     const raw = storage.getItem(STORAGE_KEY)
     const parsed: unknown = raw ? JSON.parse(raw) : null
-    return isQuizState(parsed) ? parsed : initialState
+    // estados salvos antes do campo notice existir continuam válidos
+    return isQuizState(parsed) ? { ...parsed, notice: parsed.notice ?? null } : initialState
   } catch {
     return initialState
   }

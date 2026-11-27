@@ -6,7 +6,8 @@ import { useDebouncedValue } from '../useDebouncedValue'
 import { LeadFilters } from './LeadFilters'
 import { LeadsTable, LeadsTableSkeleton } from './LeadsTable'
 import { LEADS_PAGE_SIZE, readLeadParams } from './lead-params'
-import { useAdminQuizSummary, useLeads } from './useLeads'
+import { useAdminQuizSummary } from '../useAdminQuizSummary'
+import { useLeads } from './useLeads'
 
 export function LeadsPage() {
   const [searchParams, setSearchParams] = useSearchParams()

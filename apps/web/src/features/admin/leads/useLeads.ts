@@ -1,17 +1,7 @@
-import type { AdminQuizSummary, LeadDetail, LeadListItem, Paginated } from '@quiz/shared'
+import type { LeadDetail, LeadListItem, Paginated } from '@quiz/shared'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useAdminApi } from '../useAdminApi'
 import { LEADS_PAGE_SIZE, type LeadParams, leadsApiPath } from './lead-params'
-
-/** Resumo do quiz no admin (faixas, contagens). Compartilhado com a tela de perguntas. */
-export function useAdminQuizSummary() {
-  const api = useAdminApi()
-  return useQuery({
-    queryKey: ['admin', 'quiz'],
-    queryFn: () => api<AdminQuizSummary>('/admin/quiz'),
-    staleTime: 5 * 60_000,
-  })
-}
 
 export function useLeads(params: LeadParams) {
   const api = useAdminApi()

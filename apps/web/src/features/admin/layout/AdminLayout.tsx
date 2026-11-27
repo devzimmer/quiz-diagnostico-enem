@@ -17,8 +17,8 @@ export function AdminLayout() {
   return (
     <div className="min-h-dvh bg-painel-fundo font-admin text-painel-texto">
       <header className="border-b border-painel-borda bg-white">
-        <div className="mx-auto flex min-h-16 max-w-[1280px] flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
-          <Logo className="h-8" />
+        <div className="mx-auto flex min-h-16 max-w-[1280px] flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 sm:gap-x-6 sm:px-6">
+          <Logo className="h-7 sm:h-8" />
           <nav aria-label="Principal" className="flex gap-1">
             {/* Leads continua ativo no detalhe (/admin/leads/:id) */}
             <NavLink
@@ -36,9 +36,14 @@ export function AdminLayout() {
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <span className="hidden text-sm text-painel-sub sm:inline">{session?.user.email}</span>
-            <Button variant="secondary" size="sm" onClick={() => void signOut()}>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="px-2.5 sm:px-3"
+              onClick={() => void signOut()}
+            >
               <LogOut aria-hidden />
-              Sair
+              <span className="sr-only sm:not-sr-only">Sair</span>
             </Button>
           </div>
         </div>

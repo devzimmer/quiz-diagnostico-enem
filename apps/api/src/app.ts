@@ -4,6 +4,9 @@ import { HTTPException } from 'hono/http-exception'
 import type { AppDeps, AppEnv } from './deps'
 import type { Env } from './env'
 import { HttpError } from './lib/http-error'
+import { requireAdmin } from './middleware/require-admin'
+import { adminLeadRoutes } from './routes/admin-leads'
+import { adminQuizRoutes } from './routes/admin-quiz'
 import { publicRoutes } from './routes/public'
 
 export function createApp(makeDeps: (env: Env) => AppDeps) {
@@ -42,6 +45,9 @@ export function createApp(makeDeps: (env: Env) => AppDeps) {
 
   app.get('/api/v1/health', (c) => c.json({ status: 'ok' }))
   app.route('/api/v1', publicRoutes)
+  app.use('/api/v1/admin/*', requireAdmin())
+  app.route('/api/v1/admin', adminLeadRoutes)
+  app.route('/api/v1/admin', adminQuizRoutes)
 
   app.notFound((c) => c.json(new HttpError(404, 'NOT_FOUND', 'Rota não encontrada').toBody(), 404))
 

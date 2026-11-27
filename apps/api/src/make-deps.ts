@@ -33,6 +33,7 @@ export function makeDeps(env: Env): AppDeps {
     leadQueryRepo: new DrizzleLeadQueryRepository(db),
     questionAdminRepo: new DrizzleQuestionAdminRepository(db),
     verifyToken: getVerifier(env),
+    submissionLimiter: env.SUBMISSION_LIMITER,
     dispose: close,
   }
 }

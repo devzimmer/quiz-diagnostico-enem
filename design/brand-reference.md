@@ -74,4 +74,4 @@ Raios mais usados: `999px` (pills), `10–12px` (inputs/chips), `16–22px` (car
 
 ## Telas (`design/canvas/`)
 
-HTML das 8 telas desenhadas no canvas "Quiz ENEM — Telas" (formato `.dc.html` do editor de design; abrir o arquivo mostra o markup e os estilos de cada tela). `Main.dc.html` é a tela inicial do quiz.
+HTML das 10 telas desenhadas no canvas "Quiz ENEM — Telas" (formato `.dc.html` do editor de design; abrir o arquivo mostra o markup e os estilos de cada tela). `Main.dc.html` é a tela inicial do quiz.

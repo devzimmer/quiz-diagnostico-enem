@@ -18,6 +18,7 @@ Sucesso = o fluxo completo funciona sem quebrar, o código e a modelagem se expl
 - Formulário de captura (nome, e-mail, telefone) depois da última pergunta e antes do resultado, validado no front e no back.
 - Pontuação 0–100 calculada **no backend**; resultado com faixa, mensagem e resumo das respostas.
 - Admin com login e senha (usuário via seed), listagem de leads, busca por nome/e-mail, filtro por faixa, detalhe com todas as respostas.
+- **Editor de perguntas no admin** (decisão do dono do projeto; vai além do enunciado, que só exige conteúdo vindo do backend): o marketing cria, edita, reordena e desativa perguntas e alternativas com pesos, sem tocar no banco. As regras de versionamento (seção 7) são garantidas pela API.
 - Banco relacional real, API separada do front com status HTTP coerentes, validação no servidor, rotas admin protegidas no backend.
 - README: como rodar, variáveis de ambiente, credenciais do admin, decisões técnicas e o que faria com mais tempo.
 - Seed/migration com perguntas e admin. Testes nos pontos críticos (pontuação e validação do lead).
@@ -32,14 +33,15 @@ Sucesso = o fluxo completo funciona sem quebrar, o código e a modelagem se expl
 6. Deploy público.
 
 **Não-objetivos**
-- CRUD de perguntas no admin (o Supabase Studio cumpre esse papel para o marketing).
+- Rascunho/publicação de conteúdo (alterações no editor entram no ar na hora), edição das faixas de resultado e do texto da tela inicial pela UI.
+- Papéis distintos para marketing e comercial (um único papel `admin`).
 - Cadastro/gestão de usuários admin, recuperação de senha.
 - Múltiplos quizzes simultâneos na UI, i18n, analytics/tracking.
 
 **Anti-objetivos (falha mesmo que "funcione")**
 - Pesos das alternativas expostos ao cliente ou pontuação aceita do cliente.
 - Endpoint admin acessível sem token válido de admin.
-- Histórico de respostas de um lead mudando quando o marketing edita uma pergunta.
+- Histórico de respostas de um lead mudando quando o marketing edita uma pergunta, ou resposta apontando para pergunta que deixou de existir.
 - Fluxo quebrado ou desconfortável no celular.
 - Over-engineering que estoure o tempo e deixe o fluxo principal incompleto.
 
@@ -97,10 +99,12 @@ packages/shared: schemas Zod de entrada (lead, envio), tipos de resposta da API
 
 ```
 quizzes         id uuid PK, slug text UNIQUE, title text, is_active bool, created_at
-questions       id uuid PK, quiz_id FK→quizzes, position int, text text
-                UNIQUE (quiz_id, position)
+questions       id uuid PK, quiz_id FK→quizzes, position int, text text,
+                is_active bool, previous_version_id FK→questions NULL,
+                created_at, updated_at
+                UNIQUE (quiz_id, position) WHERE is_active   -- índice parcial
 options         id uuid PK, question_id FK→questions, position int, text text,
-                weight int CHECK (weight >= 0)
+                weight int CHECK (weight BETWEEN 0 AND 100)
                 UNIQUE (question_id, position)
 result_bands    id uuid PK, quiz_id FK→quizzes, slug text, label text, message text,
                 min_score int, max_score int, CHECK (min_score <= max_score)
@@ -120,7 +124,14 @@ submission_answers  id uuid PK, submission_id FK→submissions ON DELETE CASCADE
 Decisões de modelagem:
 - **Lead ≠ envio.** O lead é a pessoa (e-mail único); cada vez que ela responde o quiz é um `submission`. Isso resolve deduplicação por e-mail sem perder histórico.
 - **E-mail repetido (decidido):** o lead é atualizado (nome e telefone) e ganha um novo envio; o admin sempre mostra o envio mais recente. Antes de gravar, a pessoa é avisada de que já respondeu e que o resultado anterior será substituído se prosseguir (fluxo na seção 9). O banco guarda o histórico; para a pessoa e para o comercial vale o último.
-- **Snapshot nas respostas e na faixa.** Texto da pergunta, da alternativa, peso e faixa são copiados no momento do envio. Se o marketing editar o conteúdo, o histórico de cada lead continua mostrando exatamente o que a pessoa viu.
+- **Versionamento de perguntas (regra central do editor):**
+  - Pergunta **sem respostas**: editar altera a própria linha (texto, alternativas, pesos).
+  - Pergunta **com respostas**: editar cria uma pergunta nova (com alternativas novas) na mesma posição, com `previous_version_id` apontando para a antiga, e desativa a antiga (`is_active = false`). As respostas antigas continuam ligadas à versão que o lead viu.
+  - **Excluir** nunca apaga: desativa (`is_active = false`). Não é permitido desativar a última pergunta ativa.
+  - Reordenar só muda `position` das perguntas ativas; não gera versão.
+  - Toda a operação roda em transação. As FKs de `submission_answers` para perguntas e alternativas são `ON DELETE RESTRICT`: o próprio banco recusa apagar conteúdo já respondido, mesmo fora da API.
+  - O quiz público mostra só perguntas ativas, por `position`; o total de perguntas pode variar e o progresso usa esse total.
+- **Snapshot nas respostas e na faixa.** Texto da pergunta, da alternativa, peso e faixa são copiados no momento do envio. Com o versionamento isso é redundante para edições feitas pela API, mas deixa a leitura do detalhe do lead sem joins e protege contra edição direta no banco.
 - **Faixas no banco**, não no código: rótulos e mensagens também são conteúdo de marketing.
 - **Telefone normalizado** para dígitos (`11987654321`); formatação é responsabilidade da UI.
 - Índices: `leads(created_at desc)`, `submissions(lead_id, created_at desc)`, busca com `ILIKE` em nome/e-mail (volume de teste não pede trigram).
@@ -148,6 +159,11 @@ Formato de erro único: `{ "error": { "code": string, "message": string, "detail
 | `POST /submissions` | — | 201 `{submissionId, score, band:{slug,label,message}, answers:[{position, question, option}]}` | 400 JSON malformado; 409 `LEAD_ALREADY_SUBMITTED` (e-mail já tem envio e `confirmReplace` não veio `true`); 422 validação (campos do lead, pergunta sem resposta, resposta duplicada, alternativa que não pertence à pergunta ou ao quiz ativo); 429 rate limit (diferencial) |
 | `GET /admin/leads?search=&band=&page=&pageSize=` | admin | 200 `{data:[{id,name,email,phone,score,band,createdAt}], pagination:{page,pageSize,total}}` | 401, 403, 422 parâmetros inválidos |
 | `GET /admin/leads/:id` | admin | 200 lead + último envio com as respostas | 401, 403, 404 |
+| `GET /admin/quiz` | admin | 200 quiz ativo com perguntas ativas, alternativas **com pesos**, `answerCount` por pergunta e `maxPoints` atual | 401, 403 |
+| `POST /admin/quiz/questions` | admin | 201 pergunta criada no fim da lista | 401, 403, 422 |
+| `PUT /admin/quiz/questions/:id` | admin | 200 `{question, versioned}` — `versioned: true` quando a regra criou uma nova versão (novo `id`) | 401, 403, 404, 409 se a pergunta já está inativa, 422 |
+| `DELETE /admin/quiz/questions/:id` | admin | 204 (desativa) | 401, 403, 404, 422 se for a última ativa |
+| `PUT /admin/quiz/question-order` | admin | 200 com `{questionIds: [...]}` na nova ordem (deve conter exatamente as perguntas ativas) | 401, 403, 422 |
 | `GET /admin/stats` (diferencial) | admin | 200 `{total, last7Days, averageScore, byBand:[…], byDay:[…14 dias]}` | 401, 403 |
 | `GET /admin/leads/export.csv` (diferencial) | admin | 200 `text/csv` respeitando filtros | 401, 403 |
 | `GET /health` | — | 200 | — |
@@ -156,6 +172,7 @@ Formato de erro único: `{ "error": { "code": string, "message": string, "detail
 - **Fluxo de e-mail repetido:** o primeiro envio vai sem `confirmReplace`. Se o e-mail já tem envio, a API responde 409 sem gravar nada; o front abre um diálogo ("Você já fez este diagnóstico. Se continuar, seu resultado anterior será substituído por este.") com "Continuar" e "Cancelar". Em "Continuar", reenvia com `confirmReplace: true` → 201. A verificação acontece só no envio completo (não existe endpoint de "e-mail existe?"), para não facilitar enumeração de e-mails; o 409 não revela dados do envio anterior.
 - Se a validação falhar porque o quiz mudou durante o preenchimento (pergunta/alternativa não pertence ao quiz ativo), o front avisa e reinicia o quiz.
 - Lead + envio + respostas gravados numa **única transação**.
+- Validação do conteúdo da pergunta (schema compartilhado): texto 5–300 caracteres; 2 a 6 alternativas; texto da alternativa 1–200; peso inteiro 0–100.
 - `pageSize` máximo 100; ordenação padrão `createdAt desc`.
 - CORS: allowlist via env (`ALLOWED_ORIGINS`). Em dev, o Vite faz proxy de `/api` para o Wrangler e evita CORS.
 
@@ -171,7 +188,7 @@ Front: máscara no input, validação ao sair do campo e no envio. Back: mesmo s
 
 ## 11. Front — telas e fluxo
 
-Referência visual (aprovada pelo dono do projeto): canvas "Quiz ENEM — Telas", 8 artboards. Link: https://claude.ai/artifact/1KNjfJrvqLMXhPDbmTBz2R (privado). O HTML de cada tela está versionado em `design/canvas/*.dc.html` e é a fonte de layout, componentes e comportamento mobile. Tokens e tipografia em `design/brand-reference.md`.
+Referência visual (aprovada pelo dono do projeto): canvas "Quiz ENEM — Telas", 10 artboards. Link: https://claude.ai/artifact/1KNjfJrvqLMXhPDbmTBz2R (privado). O HTML de cada tela está versionado em `design/canvas/*.dc.html` e é a fonte de layout, componentes e comportamento mobile. Tokens e tipografia em `design/brand-reference.md`.
 
 A tela `/admin` do canvas inclui indicadores e gráficos: eles pertencem ao diferencial "Dashboard". A primeira entrega da tela é cabeçalho + busca + filtro + tabela + paginação; indicadores e gráficos entram na fase do dashboard, no topo da mesma tela. Da mesma forma, "Exportar CSV" só aparece quando o diferencial for feito.
 
@@ -184,6 +201,8 @@ A tela `/admin` do canvas inclui indicadores e gráficos: eles pertencem ao dife
 | `/admin/login` | Login |
 | `/admin` | Leads: indicadores, gráficos, busca, filtro, tabela, paginação |
 | `/admin/leads/:id` | Drawer de detalhe sobre a lista (rota aninhada, URL compartilhável) |
+| `/admin/perguntas` | Editor: lista de perguntas ativas com alternativas e pesos, contagem de respostas, subir/descer, editar, desativar, nova pergunta, pontuação máxima atual |
+| `/admin/perguntas/:id` e `/admin/perguntas/nova` | Drawer de edição: texto, alternativas (texto + peso), adicionar/remover alternativa; se a pergunta tem respostas, aviso de que salvar cria nova versão e confirmação antes de salvar |
 
 - Quiz segue a linguagem da LP (Anton/Rubik/Kalam, papel quadriculado, amarelo marca-texto, CTA verde pílula). Admin segue o institucional (Inter, azul `#0021E1`).
 - Estados obrigatórios: carregando perguntas (skeleton), falha ao carregar (tentar de novo), enviando (botão com spinner, campos desabilitados), falha no envio (toast, dados preservados), erro de validação por campo, diálogo de e-mail já usado (409), login inválido, lista vazia/sem resultado de busca, erro ao carregar lista.
@@ -194,7 +213,8 @@ A tela `/admin` do canvas inclui indicadores e gráficos: eles pertencem ao dife
 ## 12. Testes
 
 - **Unitários (Vitest):** cálculo de pontuação e faixa; schema do lead (casos válidos e inválidos de nome, e-mail, telefone/DDD).
-- **Rotas da API:** `POST /submissions` (201, 422 por motivo) e proteção admin (401/403/200) via `app.request` do Hono com repositório fake e verificação de JWT substituível.
+- **Versionamento:** editar pergunta sem respostas altera no lugar; com respostas cria versão nova e desativa a antiga; não deixa desativar a última ativa; reordenação rejeita lista que não bate com as ativas.
+- **Rotas da API:** `POST /submissions` (201, 409, 422 por motivo) e proteção admin (401/403/200) via `app.request` do Hono com repositório fake e verificação de JWT substituível.
 - Front: sem testes automatizados, salvo tempo sobrando.
 
 ## 13. Dados iniciais
@@ -219,7 +239,8 @@ A tela `/admin` do canvas inclui indicadores e gráficos: eles pertencem ao dife
 - Componentes shadcn específicos e detalhes de animação.
 - Ordem exata dos diferenciais depois do item 3, conforme o tempo.
 
-- Unicidade de quiz ativo, não sobreposição das faixas e política de `ON DELETE` para conteúdo apagado no Studio (os snapshots permitem `SET NULL`/`RESTRICT`).
+- Unicidade de quiz ativo e não sobreposição das faixas.
+- Como trocar posições sem violar o índice único parcial durante a reordenação (ex.: posições temporárias negativas na mesma transação).
 - Implementação do rate limit no Worker.
 
 ## 16. Decisões do dono do projeto
@@ -227,3 +248,4 @@ A tela `/admin` do canvas inclui indicadores e gráficos: eles pertencem ao dife
 1. Repositório público `quiz-diagnostico-enem` na conta `devzimmer`.
 2. Docker Desktop instalado localmente; Supabase local via CLI.
 3. E-mail repetido: atualiza o lead e registra novo envio, com aviso prévio de substituição (seção 9).
+4. Editor de perguntas no admin é obrigatório, não diferencial (seções 2, 7, 9 e 11). Reordenação por botões subir/descer (acessível e funciona no celular), não arrastar.

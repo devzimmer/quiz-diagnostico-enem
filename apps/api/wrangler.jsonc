@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "quiz-diagnostico-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      // Em produção, substituir pelo id criado com `wrangler hyperdrive create`.
+      "id": "00000000000000000000000000000000",
+      "localConnectionString": "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+    },
+  ],
+  "vars": {
+    "SUPABASE_URL": "http://127.0.0.1:54321",
+    "ALLOWED_ORIGINS": "http://localhost:5173",
+  },
+}

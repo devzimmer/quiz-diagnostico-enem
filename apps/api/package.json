@@ -7,7 +7,8 @@
     "dev": "wrangler dev --port 8787",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "dev:memory": "tsx scripts/dev-memory.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.9.1",
@@ -21,8 +22,10 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261125.1",
     "@electric-sql/pglite": "^0.6.0",
+    "@hono/node-server": "^2.1.11",
     "@types/node": "^26.6.11",
     "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^5.1.2",
     "wrangler": "^4.168.0"

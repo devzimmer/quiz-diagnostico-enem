@@ -39,7 +39,7 @@
   }
   /* Botão principal do quiz (verde, com "degrau") */
   .btn-cta {
-    @apply inline-flex h-[60px] w-full items-center justify-center gap-2.5 rounded-full bg-verde-cta px-6 text-[17px] font-extrabold uppercase tracking-wide text-white shadow-cta transition hover:bg-verde-cta-hover active:translate-y-[3px] active:shadow-[0_2px_0_#075E10] disabled:cursor-not-allowed disabled:opacity-70;
+    @apply inline-flex h-[60px] w-full items-center justify-center gap-2.5 rounded-full bg-verde-cta px-6 text-[17px] font-extrabold uppercase tracking-wide text-white shadow-cta transition hover:bg-verde-cta-hover active:translate-y-[3px] active:shadow-[0_2px_0_#075E10] disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-[#E3EAF4] disabled:text-[#5B6B86] disabled:shadow-none;
   }
   .selo {
     @apply inline-block -rotate-2 bg-amarelo px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-[0.08em] text-tinta shadow-[0_2px_0_rgba(11,42,91,0.12)];

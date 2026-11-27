@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Outlet, useSearchParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { StatsPanel } from '../dashboard/StatsPanel'
+import { ExportCsvButton } from './ExportCsvButton'
 import { useDebouncedValue } from '../useDebouncedValue'
 import { LeadFilters } from './LeadFilters'
 import { LeadsTable, LeadsTableSkeleton } from './LeadsTable'
@@ -57,11 +58,14 @@ export function LeadsPage() {
 
   return (
     <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pb-12 pt-8 sm:px-6">
-      <div>
-        <h1 className="text-[28px] font-bold tracking-tight">Leads</h1>
-        <p className="mt-1 text-[15px] text-painel-sub">
-          Contatos capturados pelo quiz de diagnóstico ENEM.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[28px] font-bold tracking-tight">Leads</h1>
+          <p className="mt-1 text-[15px] text-painel-sub">
+            Contatos capturados pelo quiz de diagnóstico ENEM.
+          </p>
+        </div>
+        <ExportCsvButton search={params.search} band={params.band} />
       </div>
 
       <StatsPanel />

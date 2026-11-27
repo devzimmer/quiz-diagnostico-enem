@@ -19,10 +19,15 @@ export class ApiError extends Error {
   }
 }
 
-export type ApiInit = Omit<RequestInit, 'body'> & { json?: unknown; token?: string }
+export type ApiInit = Omit<RequestInit, 'body'> & {
+  json?: unknown
+  token?: string
+  /** `blob` para downloads (CSV); erros continuam vindo como ApiError. */
+  as?: 'json' | 'blob'
+}
 
 export async function apiFetch<T>(path: string, init: ApiInit = {}): Promise<T> {
-  const { json, token, headers: extraHeaders, ...rest } = init
+  const { json, token, as = 'json', headers: extraHeaders, ...rest } = init
   const headers = new Headers(extraHeaders)
   if (json !== undefined) headers.set('content-type', 'application/json')
   if (token) headers.set('authorization', `Bearer ${token}`)
@@ -39,6 +44,7 @@ export async function apiFetch<T>(path: string, init: ApiInit = {}): Promise<T> 
   }
 
   if (res.status === 204) return undefined as T
+  if (res.ok && as === 'blob') return (await res.blob()) as T
   const body: unknown = await res.json().catch(() => null)
   if (!res.ok) {
     const error = (body as ApiErrorBody | null)?.error

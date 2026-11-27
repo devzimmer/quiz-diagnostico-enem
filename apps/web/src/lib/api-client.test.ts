@@ -55,4 +55,13 @@ describe('apiFetch', () => {
     mockFetch(async () => new Response(null, { status: 204 }))
     expect(await apiFetch('/x', { method: 'DELETE' })).toBeUndefined()
   })
+
+  it('as: blob devolve o arquivo sem tentar ler JSON', async () => {
+    mockFetch(
+      async () => new Response('a;b', { status: 200, headers: { 'content-type': 'text/csv' } }),
+    )
+    const blob = await apiFetch<Blob>('/admin/leads/export.csv', { as: 'blob' })
+    expect(blob).toBeInstanceOf(Blob)
+    expect(await blob.text()).toBe('a;b')
+  })
 })

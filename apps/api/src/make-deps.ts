@@ -3,6 +3,7 @@ import type { Env } from './env'
 import { createSupabaseTokenVerifier } from './auth/verify-token'
 import type { VerifyToken } from './auth/types'
 import { createDb } from './db/client'
+import { DrizzleLeadQueryRepository } from './repositories/drizzle/lead-query-repository'
 import { DrizzleQuizRepository } from './repositories/drizzle/quiz-repository'
 import { DrizzleSubmissionRepository } from './repositories/drizzle/submission-repository'
 
@@ -35,7 +36,7 @@ export function makeDeps(env: Env): AppDeps {
   return {
     quizRepo: new DrizzleQuizRepository(db),
     submissionRepo: new DrizzleSubmissionRepository(db),
-    leadQueryRepo: notImplemented('leadQueryRepo'),
+    leadQueryRepo: new DrizzleLeadQueryRepository(db),
     questionAdminRepo: notImplemented('questionAdminRepo'),
     verifyToken: getVerifier(env),
     dispose: close,

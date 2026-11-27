@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-papel font-sans text-tinta antialiased;
+  }
+  :focus-visible {
+    @apply outline-none ring-4 ring-azul/30;
+  }
+}
+
+@layer components {
+  /* Papel quadriculado da LP */
+  .bg-papel-grade {
+    background-color: #fbfdff;
+    background-image:
+      linear-gradient(rgba(10, 127, 250, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10, 127, 250, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .bg-azul-grade {
+    background-color: #0a6de6;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  /* Grifo amarelo de marca-texto */
+  .marca-texto {
+    background: linear-gradient(transparent 58%, #ffe100 58%, #ffe100 92%, transparent 92%);
+    padding: 0 4px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  /* Botão principal do quiz (verde, com "degrau") */
+  .btn-cta {
+    @apply inline-flex h-[60px] w-full items-center justify-center gap-2.5 rounded-full bg-verde-cta px-6 text-[17px] font-extrabold uppercase tracking-wide text-white shadow-cta transition hover:bg-verde-cta-hover active:translate-y-[3px] active:shadow-[0_2px_0_#075E10] disabled:cursor-not-allowed disabled:opacity-70;
+  }
+  .selo {
+    @apply inline-block -rotate-2 bg-amarelo px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-[0.08em] text-tinta shadow-[0_2px_0_rgba(11,42,91,0.12)];
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

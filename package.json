@@ -14,12 +14,15 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:status": "supabase status",
-    "db:generate": "pnpm --filter @quiz/api db:generate"
+    "db:generate": "pnpm --filter @quiz/api db:generate",
+    "dev": "pnpm --parallel --filter @quiz/api --filter @quiz/web dev",
+    "build": "pnpm --filter @quiz/web build"
   },
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "prettier": "^3.10.1",
     "supabase": "^3.4.0",
     "typescript": "^5.9.3",

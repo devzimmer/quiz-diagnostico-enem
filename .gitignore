@@ -24,3 +24,6 @@ Thumbs.db
 
 # documento do enunciado (não versionar)
 Teste Técnico*.md
+
+# workspace dos planos
+.superpowers/

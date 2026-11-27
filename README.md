@@ -195,7 +195,7 @@ Contrato completo (corpos, códigos de erro): [design do projeto, seção 9](doc
 - **Quiz alterado durante o preenchimento** → 422 `QUIZ_OUTDATED`; o front avisa e recomeça com as perguntas novas. O estado salvo no `sessionStorage` também é reconciliado com o quiz atual ao carregar.
 - **Drizzle + postgres.js via Hyperdrive.** SQL tipado e migrations versionadas (`drizzle-kit` gera em `supabase/migrations`, aplicadas pelo Supabase CLI); o Hyperdrive mantém o pool de conexões perto do Worker.
 - **Supabase Auth no admin**, com o papel em `app_metadata` (o usuário não consegue editar). A API valida assinatura, expiração e emissor; aceita HS256 (local) e chaves assimétricas via JWKS (projetos novos).
-- **Telefone normalizado para dígitos** com DDD válido; aceita `+55 11 98765-4321`, `011987654321`, `(11) 98765-4321`. Formatação é papel da interface.
+- **Telefone normalizado para dígitos** (DDD de 11 a 99 + 8 ou 9 dígitos); aceita `+55 11 98765-4321`, `011987654321`, `(11) 98765-4321`. Formatação é papel da interface.
 - **Busca segura:** `%` e `_` digitados são escapados no `ILIKE`.
 - **CSV pensado para o Excel em pt-BR** (`;`, BOM UTF-8) e protegido contra injeção de fórmula (`=`, `+`, `-`, `@`).
 - **Datas** sempre exibidas e agrupadas no fuso `America/Sao_Paulo` (o gráfico de leads por dia não "pula" lead das 22h para o dia seguinte).

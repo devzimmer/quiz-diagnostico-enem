@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Admin — Login</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#14254D}
+a{color:#0021E1}a:hover{color:#00179E}
+.campo{font:inherit;outline:none}
+.campo:focus{border-color:#0021E1;box-shadow:0 0 0 4px rgba(0,33,225,.12)}
+.primario{background:#0021E1;border:0;cursor:pointer;font:inherit}
+.primario:hover{background:#001BBD}
+.icone{background:none;border:0;cursor:pointer}
+.icone:hover{background:#EFF2F8}
+</style>
+</helmet>
+<main style="min-height: 900px; box-sizing: border-box; padding: 48px 16px; background: #F4F6FA; display: flex; align-items: center; justify-content: center">
+  <div style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center">
+      <div style="width: 152px; height: 40px; border: 1.5px dashed #A6B2C8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #5A6680">Logo</div>
+      <div>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.01em">Painel de leads</h1>
+        <p style="margin: 6px 0 0; font-size: 15px; color: #5A6680">Entre com a conta do time comercial.</p>
+      </div>
+    </div>
+
+    <form style="background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 1px 2px rgba(20,37,77,.04), 0 8px 24px rgba(20,37,77,.06)">
+      <div role="alert" style="display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 10px; background: #FFF4F3; border: 1px solid #F3C2BE; font-size: 14px; color: #A30A00">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        E-mail ou senha incorretos.
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="adm-email" style="font-size: 14px; font-weight: 600">E-mail</label>
+        <input id="adm-email" class="campo" type="email" autocomplete="username" value="admin@quiz.local" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1.5px solid #D5DCE8; border-radius: 10px; font-size: 15px; color: #14254D; background: #FFFFFF">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="adm-senha" style="font-size: 14px; font-weight: 600">Senha</label>
+        <div style="position: relative">
+          <input id="adm-senha" class="campo" type="password" autocomplete="current-password" value="senhaexemplo" style="width: 100%; height: 46px; box-sizing: border-box; padding: 0 48px 0 14px; border: 1.5px solid #D5DCE8; border-radius: 10px; font-size: 15px; color: #14254D; background: #FFFFFF">
+          <button type="button" class="icone" aria-label="Mostrar senha" style="position: absolute; right: 2px; top: 1px; width: 44px; height: 44px; border-radius: 8px; color: #5A6680; display: flex; align-items: center; justify-content: center">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="primario" style="height: 48px; border-radius: 10px; color: #FFFFFF; font-size: 15px; font-weight: 600">Entrar</button>
+    </form>
+    <p style="margin: 0; text-align: center; font-size: 13px; color: #5A6680">Acesso restrito. Usuários são criados pelo time de tecnologia.</p>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

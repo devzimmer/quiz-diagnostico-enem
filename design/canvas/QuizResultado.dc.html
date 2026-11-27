@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Quiz — Resultado</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Kalam:wght@400;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'Rubik',system-ui,sans-serif;color:#0B2A5B}
+a{color:#0866D6}a:hover{color:#0749A8}
+.papel{background-color:#FBFDFF;background-image:linear-gradient(rgba(10,127,250,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(10,127,250,.08) 1px,transparent 1px);background-size:24px 24px}
+.marca{background:linear-gradient(transparent 58%,#FFE100 58%,#FFE100 92%,transparent 92%);padding:0 4px}
+.azul{background-color:#0A6DE6;background-image:linear-gradient(rgba(255,255,255,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.09) 1px,transparent 1px);background-size:24px 24px}
+</style>
+</helmet>
+<div class="papel" style="width: 390px; min-height: 1720px; box-sizing: border-box; padding: 16px 20px 40px; display: flex; flex-direction: column">
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 44px">
+    <div style="width: 128px; height: 34px; border: 1.5px dashed #9DB4D6; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #3A4F73">Logo</div>
+    <span style="font-size: 13px; font-weight: 500; color: #3A4F73">Seu diagnóstico</span>
+  </header>
+
+  <section class="azul" style="margin-top: 16px; border-radius: 24px; padding: 28px 22px 26px; color: #FFFFFF; position: relative; box-shadow: 0 10px 30px rgba(10,109,230,.25)">
+    <p style="margin: 0; font-size: 15px; font-weight: 500; color: #FFFFFF">Mariana, sua pontuação é</p>
+    <div style="margin-top: 4px; display: flex; align-items: flex-end; gap: 8px">
+      <span style="font-family: 'Anton', Impact, sans-serif; font-size: 112px; line-height: .95; color: #FFFFFF">64</span>
+      <span style="font-family: 'Anton', Impact, sans-serif; font-size: 30px; line-height: 1.6; color: #DCEBFF">/100</span>
+    </div>
+    <span style="position: absolute; top: 34px; right: 18px; transform: rotate(4deg); background: #FFE100; color: #0B2A5B; padding: 8px 12px; font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; box-shadow: 0 3px 0 rgba(0,0,0,.15)">Bom caminho</span>
+
+    <div aria-hidden="true" style="margin-top: 22px; position: relative">
+      <div style="display: grid; grid-template-columns: 31fr 25fr 25fr 20fr; gap: 4px">
+        <span style="height: 10px; border-radius: 99px 0 0 99px; background: rgba(255,255,255,.35)"></span>
+        <span style="height: 10px; background: rgba(255,255,255,.35)"></span>
+        <span style="height: 10px; background: #FFE100"></span>
+        <span style="height: 10px; border-radius: 0 99px 99px 0; background: rgba(255,255,255,.35)"></span>
+      </div>
+      <span style="position: absolute; top: -5px; left: calc(64% - 10px); width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; border: 4px solid #0B2A5B; box-sizing: border-box"></span>
+      <div style="margin-top: 10px; display: grid; grid-template-columns: 31fr 25fr 25fr 20fr; gap: 4px; font-size: 11px; font-weight: 600; color: #DCEBFF">
+        <span>0–30</span><span>31–55</span><span style="color: #FFFFFF">56–80</span><span>81–100</span>
+      </div>
+    </div>
+    <p style="margin: 22px 0 0; font-size: 18px; font-weight: 600; line-height: 1.45; color: #FFFFFF">Sua preparação está sólida. O ganho agora vem de ajuste fino.</p>
+  </section>
+
+  <section style="margin-top: 20px; background: #FFFFFF; border: 1.5px solid #DCEBFF; border-radius: 20px; padding: 18px 18px; display: flex; gap: 14px; align-items: flex-start">
+    <span style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: #C9F5D6; color: #065E28; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.4A8.5 8.5 0 1 1 21 12z"/></svg>
+    </span>
+    <div>
+      <p style="margin: 0; font-size: 15px; font-weight: 700">Próximo passo</p>
+      <p style="margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: #3A4F73">Nosso time vai te chamar no WhatsApp (11) 98765-4321 para conversar sobre o seu plano.</p>
+    </div>
+  </section>
+
+  <div style="margin-top: 36px; display: flex; align-items: baseline; justify-content: space-between">
+    <h2 style="margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 28px; text-transform: uppercase; color: #0B2A5B">Suas <span class="marca">respostas</span></h2>
+    <span style="font-family: 'Kalam', cursive; font-size: 17px; color: #0866D6; transform: rotate(-3deg); display: inline-block">o seu raio-x</span>
+  </div>
+
+  <ol style="list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+    <sc-for list="{{ respostas }}" as="r" hint-placeholder-count="10">
+      <li style="background: #FFFFFF; border: 1.5px solid #DCEBFF; border-radius: 16px; padding: 14px 16px; display: flex; gap: 12px">
+        <span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #DCEBFF; color: #0749A8; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">{{ r.n }}</span>
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-size: 13px; line-height: 1.4; color: #3A4F73">{{ r.pergunta }}</span>
+          <span style="font-size: 15px; font-weight: 600; line-height: 1.35; color: #0B2A5B">{{ r.resposta }}</span>
+        </div>
+      </li>
+    </sc-for>
+  </ol>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var dados = [
+      ['Em que etapa dos estudos você está?', 'Já terminei o ensino médio e estudo por conta'],
+      ['Quantas horas por semana você estuda além da escola/cursinho?', 'De 7 a 14 horas'],
+      ['Quantos simulados completos você já fez?', 'De 3 a 5'],
+      ['Como está sua preparação para a redação?', 'Escrevi algumas, mas sem correção'],
+      ['Você tem um plano de estudos definido?', 'Tenho um plano, mas sigo parcialmente'],
+      ['Qual é a sua maior dificuldade hoje?', 'Matemática e Ciências da Natureza'],
+      ['Qual foi sua média aproximada nos últimos simulados?', 'Entre 500 e 650'],
+      ['Quão claro está seu objetivo de curso e universidade?', 'Sei o curso, mas não sei a nota de corte'],
+      ['Com que frequência você revisa o conteúdo que já estudou?', 'Reviso de vez em quando, sem método definido'],
+      ['Você pretende investir em um cursinho ou mentoria neste ano?', 'Estou pesquisando opções agora']
+    ];
+    return {
+      respostas: dados.map(function (d, i) { return { n: i + 1, pergunta: d[0], resposta: d[1] }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

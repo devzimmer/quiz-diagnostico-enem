@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Quiz — Início</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Kalam:wght@400;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'Rubik',system-ui,sans-serif;color:#0B2A5B}
+a{color:#0866D6}a:hover{color:#0749A8}
+.papel{background-color:#FBFDFF;background-image:linear-gradient(rgba(10,127,250,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(10,127,250,.08) 1px,transparent 1px);background-size:24px 24px}
+.marca{background:linear-gradient(transparent 58%,#FFE100 58%,#FFE100 92%,transparent 92%);padding:0 4px}
+.cta{background:#0D8519;box-shadow:0 5px 0 #075E10;transition:transform .1s}
+.cta:hover{background:#0C7A17}
+</style>
+</helmet>
+<div class="papel" style="width: 390px; height: 844px; box-sizing: border-box; padding: 20px 24px 28px; display: flex; flex-direction: column; position: relative; overflow: hidden">
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 44px">
+    <div style="width: 128px; height: 34px; border: 1.5px dashed #9DB4D6; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #3A4F73">Logo</div>
+    <span style="font-size: 13px; font-weight: 500; color: #3A4F73">ENEM 2027</span>
+  </header>
+
+  <div style="margin-top: 44px; display: flex">
+    <span style="display: inline-block; transform: rotate(-2.5deg); background: #FFE100; padding: 7px 14px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #0B2A5B; box-shadow: 0 2px 0 rgba(11,42,91,.12)">Diagnóstico gratuito</span>
+  </div>
+
+  <h1 style="margin: 20px 0 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 46px; line-height: 1.04; text-transform: uppercase; color: #0B2A5B; letter-spacing: .005em">Qual é a sua <span class="marca">chance real</span> de passar no ENEM?</h1>
+
+  <p style="margin: 18px 0 0; font-size: 17px; line-height: 1.5; color: #3A4F73">Responda 10 perguntas rápidas sobre a sua rotina de estudos e descubra em que ponto da preparação você está.</p>
+
+  <ul style="list-style: none; margin: 28px 0 0; padding: 18px 18px; background: #FFFFFF; border: 1.5px solid #DCEBFF; border-radius: 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 8px 24px rgba(11,42,91,.06)">
+    <li style="display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 500">
+      <span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #DCEBFF; color: #0A6DE6; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
+      </span>
+      10 perguntas de múltipla escolha
+    </li>
+    <li style="display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 500">
+      <span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #DCEBFF; color: #0A6DE6; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      </span>
+      Leva cerca de 2 minutos
+    </li>
+    <li style="display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 500">
+      <span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #DCEBFF; color: #0A6DE6; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+      </span>
+      Resultado na hora, com o que focar agora
+    </li>
+  </ul>
+
+  <div style="flex-grow: 1"></div>
+
+  <div style="position: relative; display: flex; justify-content: flex-end; padding-right: 18px; margin-bottom: 10px">
+    <span style="font-family: 'Kalam', cursive; font-size: 19px; color: #0866D6; transform: rotate(-4deg); display: inline-block">é rapidinho, prometo!</span>
+    <svg aria-hidden="true" width="34" height="30" viewBox="0 0 34 30" fill="none" stroke="#0866D6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px; margin-top: 14px"><path d="M4 4c10 2 18 9 22 20"/><path d="M20 21l6 4 2-7"/></svg>
+  </div>
+
+  <a href="QuizPergunta.dc.html" class="cta" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; border-radius: 999px; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase">
+    Começar diagnóstico
+    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+  <p style="margin: 16px 0 0; text-align: center; font-size: 13px; color: #3A4F73">Gratuito · você só deixa seu contato no final</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

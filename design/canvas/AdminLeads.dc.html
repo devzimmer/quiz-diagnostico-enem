@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Admin — Leads</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#14254D}
+a{color:#0021E1}a:hover{color:#00179E}
+.campo{font:inherit;outline:none}
+.campo:focus{border-color:#0021E1;box-shadow:0 0 0 4px rgba(0,33,225,.12)}
+.sec{background:#FFFFFF;border:1px solid #D5DCE8;cursor:pointer;font:inherit}
+.sec:hover{background:#F4F6FA}
+.chip{cursor:pointer;font:inherit}
+.chip:hover{border-color:#0021E1}
+.linha:hover{background:#F7F9FD}
+.ver{text-decoration:none}
+.ver:hover{background:#EEF1FE}
+</style>
+</helmet>
+<div style="min-height: 1320px; background: #F4F6FA">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E7F0">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap">
+      <div style="width: 120px; height: 32px; border: 1.5px dashed #A6B2C8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #5A6680">Logo</div>
+      <nav aria-label="Principal" style="display: flex; gap: 4px">
+        <a href="AdminLeads.dc.html" aria-current="page" style="padding: 8px 12px; border-radius: 8px; background: #EEF1FE; color: #0021E1; font-size: 14px; font-weight: 600; text-decoration: none">Leads</a>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 12px">
+        <span style="font-size: 14px; color: #5A6680">admin@quiz.local</span>
+        <a href="AdminLogin.dc.html" class="sec" style="height: 36px; padding: 0 14px; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #14254D; text-decoration: none">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+          Sair
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 0 auto; padding: 32px 24px 48px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <div>
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -.02em">Leads</h1>
+        <p style="margin: 4px 0 0; font-size: 15px; color: #5A6680">Contatos capturados pelo quiz de diagnóstico ENEM.</p>
+      </div>
+      <button type="button" class="sec" style="height: 40px; padding: 0 16px; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #14254D">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        Exportar CSV
+      </button>
+    </div>
+
+    <section aria-label="Indicadores" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
+      <div style="background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 14px; padding: 20px">
+        <p style="margin: 0; font-size: 13px; font-weight: 500; color: #5A6680">Total de leads</p>
+        <p style="margin: 8px 0 0; font-size: 32px; font-weight: 700; letter-spacing: -.02em">248</p>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 14px; padding: 20px">
+        <p style="margin: 0; font-size: 13px; font-weight: 500; color: #5A6680">Últimos 7 dias</p>
+        <p style="margin: 8px 0 0; font-size: 32px; font-weight: 700; letter-spacing: -.02em">63</p>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 14px; padding: 20px">
+        <p style="margin: 0; font-size: 13px; font-weight: 500; color: #5A6680">Pontuação média</p>
+        <p style="margin: 8px 0 0; font-size: 32px; font-weight: 700; letter-spacing: -.02em">52<span style="font-size: 16px; font-weight: 500; color: #5A6680"> /100</span></p>
+      </div>
+    </section>
+
+    <section style="display: flex; gap: 16px; flex-wrap: wrap">
+      <div style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 14px; padding: 20px 22px">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 600">Distribuição por faixa</h2>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px">
+          <sc-for list="{{ faixas }}" as="f" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 40px; align-items: center; gap: 12px; font-size: 13px">
+              <span style="font-weight: 500; color: #14254D">{{ f.nome }}</span>
+              <span style="height: 10px; border-radius: 99px; background: #EEF1F6; overflow: hidden; display: block">
+                <span style="{{ f.barra }}"></span>
+              </span>
+              <span style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums">{{ f.qtd }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex: 1.4 1 480px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 14px; padding: 20px 22px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <h2 style="margin: 0; font-size: 15px; font-weight: 600">Leads por dia</h2>
+          <span style="font-size: 13px; color: #5A6680">Últimos 14 dias</span>
+        </div>
+        <div role="img" aria-label="Gráfico de barras de leads por dia nos últimos 14 dias" style="margin-top: 16px; height: 132px; display: flex; align-items: flex-end; gap: 6px">
+          <sc-for list="{{ dias }}" as="d" hint-placeholder-count="14">
+            <span style="{{ d.barra }}"></span>
+          </sc-for>
+        </div>
+        <div aria-hidden="true" style="margin-top: 8px; display: flex; justify-content: space-between; font-size: 11px; color: #5A6680">
+          <span>14/11</span><span>17/11</span><span>20/11</span><span>23/11</span><span>Hoje</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 14px; overflow: hidden">
+      <div style="padding: 16px 20px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid #E2E7F0">
+        <div style="position: relative; flex: 1 1 280px; max-width: 380px">
+          <label for="busca" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar por nome ou e-mail</label>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A6680" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 11px"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="busca" class="campo" type="search" placeholder="Buscar por nome ou e-mail" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px 0 38px; border: 1.5px solid #D5DCE8; border-radius: 10px; font-size: 14px; color: #14254D; background: #FFFFFF">
+        </div>
+        <div role="radiogroup" aria-label="Filtrar por faixa" style="display: flex; gap: 8px; flex-wrap: wrap">
+          <sc-for list="{{ filtros }}" as="c" hint-placeholder-count="5">
+            <button type="button" role="radio" aria-checked="{{ c.ativo }}" class="chip" style="{{ c.estilo }}">{{ c.nome }} <span style="font-weight: 500; opacity: .75">{{ c.qtd }}</span></button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto">
+        <table style="width: 100%; min-width: 920px; border-collapse: collapse; font-size: 14px">
+          <thead>
+            <tr style="background: #F8FAFD; text-align: left; color: #5A6680; font-size: 12px; text-transform: uppercase; letter-spacing: .04em">
+              <th scope="col" style="padding: 12px 20px; font-weight: 600">Nome</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600">E-mail</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600">Telefone</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600; text-align: right">Pontuação</th>
+              <th scope="col" style="padding: 12px 12px; font-weight: 600">Faixa</th>
+              <th scope="col" aria-sort="descending" style="padding: 12px 12px; font-weight: 600; color: #14254D">Cadastro ↓</th>
+              <th scope="col" style="padding: 12px 20px 12px 12px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ leads }}" as="l" hint-placeholder-count="8">
+              <tr class="linha" style="border-top: 1px solid #EEF1F6">
+                <td style="padding: 14px 20px; font-weight: 600; white-space: nowrap">{{ l.nome }}</td>
+                <td style="padding: 14px 12px; color: #3B4866">{{ l.email }}</td>
+                <td style="padding: 14px 12px; color: #3B4866; white-space: nowrap; font-variant-numeric: tabular-nums">{{ l.tel }}</td>
+                <td style="padding: 14px 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums">{{ l.score }}</td>
+                <td style="padding: 14px 12px"><span style="{{ l.badge }}">{{ l.faixa }}</span></td>
+                <td style="padding: 14px 12px; color: #3B4866; white-space: nowrap; font-variant-numeric: tabular-nums">{{ l.data }}</td>
+                <td style="padding: 8px 20px 8px 12px; text-align: right"><a href="AdminLeadDetalhe.dc.html" class="ver" style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #0021E1; white-space: nowrap">Ver respostas</a></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid #E2E7F0">
+        <span style="font-size: 13px; color: #5A6680">Mostrando 1–8 de 248</span>
+        <div style="display: flex; gap: 8px">
+          <button type="button" class="sec" disabled style="height: 36px; padding: 0 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #8A94A8; cursor: not-allowed">Anterior</button>
+          <button type="button" class="sec" style="height: 36px; padding: 0 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #14254D">Próxima</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var estilos = {
+      'Ponto de partida': { bg: '#FFF1E3', fg: '#8A4300', barra: '#E6761A' },
+      'Em construção': { bg: '#FFF6C2', fg: '#6B5000', barra: '#E8C21A' },
+      'Bom caminho': { bg: '#DCEBFF', fg: '#0749A8', barra: '#0A6DE6' },
+      'Reta final': { bg: '#D6F5E0', fg: '#065E28', barra: '#0C6E32' }
+    };
+    var badge = function (f) {
+      var e = estilos[f];
+      return 'display:inline-block;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap;background:' + e.bg + ';color:' + e.fg;
+    };
+    var dist = [['Ponto de partida', 41], ['Em construção', 89], ['Bom caminho', 84], ['Reta final', 34]];
+    var max = 89;
+    var faixas = dist.map(function (d) {
+      return { nome: d[0], qtd: d[1], barra: 'display:block;height:100%;border-radius:99px;width:' + Math.round(d[1] / max * 100) + '%;background:' + estilos[d[0]].barra };
+    });
+    var porDia = [5, 9, 6, 8, 10, 7, 4, 8, 11, 7, 9, 12, 6, 10];
+    var dias = porDia.map(function (v, i) {
+      return { barra: 'flex:1;border-radius:6px 6px 2px 2px;height:' + Math.round(v / 12 * 100) + '%;background:' + (i === porDia.length - 1 ? '#0021E1' : '#8B9CF0') };
+    });
+    var filtrosBase = [['Todas', 248], ['Ponto de partida', 41], ['Em construção', 89], ['Bom caminho', 84], ['Reta final', 34]];
+    var filtros = filtrosBase.map(function (f, i) {
+      var ativo = i === 0;
+      return {
+        nome: f[0], qtd: f[1], ativo: ativo ? 'true' : 'false',
+        estilo: 'height:36px;padding:0 12px;border-radius:99px;font-size:13px;font-weight:600;border:1.5px solid ' + (ativo ? '#0021E1' : '#D5DCE8') + ';background:' + (ativo ? '#0021E1' : '#FFFFFF') + ';color:' + (ativo ? '#FFFFFF' : '#14254D')
+      };
+    });
+    var dados = [
+      ['Mariana Souza', 'mariana.souza@email.com', '(11) 98765-4321', 64, 'Bom caminho', '27/11/2026 14:32'],
+      ['Lucas Andrade', 'lucas.andrade@email.com', '(21) 99812-3344', 28, 'Ponto de partida', '27/11/2026 13:05'],
+      ['Beatriz Lima', 'bia.lima@email.com', '(31) 98477-1020', 47, 'Em construção', '27/11/2026 11:48'],
+      ['Rafael Costa', 'rafael.costa@email.com', '(85) 99654-7788', 86, 'Reta final', '27/11/2026 10:12'],
+      ['Ana Clara Rocha', 'anaclara.rocha@email.com', '(41) 99123-4567', 55, 'Em construção', '27/11/2026 09:31'],
+      ['Pedro Henrique Alves', 'pedroh.alves@email.com', '(51) 98234-9081', 73, 'Bom caminho', '26/11/2026 22:47'],
+      ['Júlia Martins', 'julia.martins@email.com', '(61) 99988-1122', 19, 'Ponto de partida', '26/11/2026 21:15'],
+      ['Thiago Nunes', 'thiago.nunes@email.com', '(71) 98765-0099', 81, 'Reta final', '26/11/2026 19:02']
+    ];
+    var leads = dados.map(function (d) {
+      return { nome: d[0], email: d[1], tel: d[2], score: d[3], faixa: d[4], data: d[5], badge: badge(d[4]) };
+    });
+    return { faixas: faixas, dias: dias, filtros: filtros, leads: leads };
+  }
+}
+</script>
+</body>
+</html>

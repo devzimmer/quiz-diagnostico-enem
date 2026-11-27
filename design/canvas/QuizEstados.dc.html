@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Quiz — Estados de carregamento e erro</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Kalam:wght@400;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'Rubik',system-ui,sans-serif;color:#0B2A5B}
+a{color:#0866D6}a:hover{color:#0749A8}
+.papel{background-color:#FBFDFF;background-image:linear-gradient(rgba(10,127,250,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(10,127,250,.08) 1px,transparent 1px);background-size:24px 24px}
+@keyframes brilho{0%{background-position:-200px 0}100%{background-position:200px 0}}
+.sk{background:linear-gradient(90deg,#E6EEF9 0,#F3F7FD 50%,#E6EEF9 100%);background-size:400px 100%;animation:brilho 1.4s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.spin{animation:gira .8s linear infinite}
+.btn-sec{border:2px solid #0A6DE6;background:#FFFFFF;cursor:pointer;font:inherit}
+.btn-sec:hover{background:#EAF3FF}
+</style>
+</helmet>
+<div style="width: 1720px; height: 844px; box-sizing: border-box; padding: 16px 20px; display: flex; gap: 40px; background: #EEF2F8">
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <p style="margin: 0; font-size: 14px; font-weight: 700; color: #3A4F73">Carregando perguntas</p>
+    <div class="papel" aria-busy="true" style="width: 390px; height: 780px; box-sizing: border-box; padding: 16px 24px 28px; display: flex; flex-direction: column; border-radius: 20px; overflow: hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; height: 44px">
+        <span class="sk" style="width: 80px; height: 18px; border-radius: 6px"></span>
+        <span class="sk" style="width: 110px; height: 18px; border-radius: 6px"></span>
+      </div>
+      <span class="sk" style="margin-top: 8px; height: 8px; border-radius: 99px"></span>
+      <span class="sk" style="margin-top: 44px; width: 100%; height: 34px; border-radius: 8px"></span>
+      <span class="sk" style="margin-top: 10px; width: 70%; height: 34px; border-radius: 8px"></span>
+      <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 12px">
+        <span class="sk" style="height: 64px; border-radius: 16px"></span>
+        <span class="sk" style="height: 64px; border-radius: 16px"></span>
+        <span class="sk" style="height: 64px; border-radius: 16px"></span>
+        <span class="sk" style="height: 64px; border-radius: 16px"></span>
+      </div>
+      <p style="margin: auto 0 0; text-align: center; font-size: 14px; color: #3A4F73">Preparando seu diagnóstico…</p>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <p style="margin: 0; font-size: 14px; font-weight: 700; color: #3A4F73">Falha ao carregar o quiz</p>
+    <div class="papel" style="width: 390px; height: 780px; box-sizing: border-box; padding: 16px 28px 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 20px">
+      <span style="width: 72px; height: 72px; border-radius: 22px; background: #FFF1E3; color: #9A4A00; display: flex; align-items: center; justify-content: center; transform: rotate(-4deg)">
+        <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 4.2-2.6M10 5.1A15 15 0 0 1 22 8.8M5 12.5a10 10 0 0 1 3.5-2M14.6 10.3A10 10 0 0 1 19 12.5M8.5 16a5 5 0 0 1 7 0M12 20h.01M3 3l18 18"/></svg>
+      </span>
+      <h1 style="margin: 24px 0 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; line-height: 1.1; text-transform: uppercase">Não conseguimos carregar o quiz</h1>
+      <p style="margin: 12px 0 0; font-size: 16px; line-height: 1.5; color: #3A4F73">Pode ser a sua conexão. Confira a internet e tente de novo.</p>
+      <button type="button" class="btn-sec" style="margin-top: 28px; height: 52px; padding: 0 28px; border-radius: 999px; color: #0749A8; font-size: 15px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; display: flex; align-items: center; gap: 8px">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>
+        Tentar de novo
+      </button>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <p style="margin: 0; font-size: 14px; font-weight: 700; color: #3A4F73">Enviando o contato</p>
+    <div class="papel" aria-busy="true" style="width: 390px; height: 780px; box-sizing: border-box; padding: 16px 24px 28px; display: flex; flex-direction: column; border-radius: 20px">
+      <h1 style="margin: 60px 0 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 32px; line-height: 1.08; text-transform: uppercase">Seu diagnóstico está pronto</h1>
+      <div style="margin-top: 28px; display: flex; flex-direction: column; gap: 16px; opacity: .6">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="e-nome" style="font-size: 14px; font-weight: 600">Nome completo</label><input id="e-nome" disabled value="Mariana Souza" style="height: 52px; box-sizing: border-box; padding: 0 16px; border: 2px solid #DCEBFF; border-radius: 12px; background: #FFFFFF; font: inherit; font-size: 16px; color: #0B2A5B"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="e-email" style="font-size: 14px; font-weight: 600">E-mail</label><input id="e-email" disabled value="mariana.souza@email.com" style="height: 52px; box-sizing: border-box; padding: 0 16px; border: 2px solid #DCEBFF; border-radius: 12px; background: #FFFFFF; font: inherit; font-size: 16px; color: #0B2A5B"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="e-tel" style="font-size: 14px; font-weight: 600">WhatsApp com DDD</label><input id="e-tel" disabled value="(11) 98765-4321" style="height: 52px; box-sizing: border-box; padding: 0 16px; border: 2px solid #DCEBFF; border-radius: 12px; background: #FFFFFF; font: inherit; font-size: 16px; color: #0B2A5B"></div>
+      </div>
+      <div style="flex-grow: 1"></div>
+      <button type="button" disabled style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; border: 0; border-radius: 999px; background: #0C7A17; color: #FFFFFF; font: inherit; font-size: 17px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; cursor: progress">
+        <svg class="spin" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-9-9"/></svg>
+        Calculando resultado…
+      </button>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <p style="margin: 0; font-size: 14px; font-weight: 700; color: #3A4F73">Falha no envio (toast)</p>
+    <div class="papel" style="width: 390px; height: 780px; box-sizing: border-box; padding: 16px 24px 28px; display: flex; flex-direction: column; border-radius: 20px; position: relative">
+      <div role="alert" style="position: absolute; top: 16px; left: 16px; right: 16px; background: #FFFFFF; border: 1.5px solid #F3C2BE; border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; box-shadow: 0 12px 32px rgba(11,42,91,.16)">
+        <span style="flex: none; color: #B30B00; margin-top: 1px">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        </span>
+        <div>
+          <p style="margin: 0; font-size: 15px; font-weight: 700; color: #0B2A5B">Não foi possível enviar</p>
+          <p style="margin: 2px 0 0; font-size: 13px; line-height: 1.45; color: #3A4F73">Suas respostas continuam salvas. Tente de novo em instantes.</p>
+        </div>
+      </div>
+      <h1 style="margin: 120px 0 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 32px; line-height: 1.08; text-transform: uppercase">Seu diagnóstico está pronto</h1>
+      <div style="margin-top: 28px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="f-nome" style="font-size: 14px; font-weight: 600">Nome completo</label><input id="f-nome" value="Mariana Souza" style="height: 52px; box-sizing: border-box; padding: 0 16px; border: 2px solid #DCEBFF; border-radius: 12px; background: #FFFFFF; font: inherit; font-size: 16px; color: #0B2A5B"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="f-email" style="font-size: 14px; font-weight: 600">E-mail</label><input id="f-email" value="mariana.souza@email.com" style="height: 52px; box-sizing: border-box; padding: 0 16px; border: 2px solid #DCEBFF; border-radius: 12px; background: #FFFFFF; font: inherit; font-size: 16px; color: #0B2A5B"></div>
+      </div>
+      <div style="flex-grow: 1"></div>
+      <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; border: 0; border-radius: 999px; background: #0D8519; box-shadow: 0 5px 0 #075E10; color: #FFFFFF; font: inherit; font-size: 17px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; cursor: pointer">Tentar de novo</button>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1720,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

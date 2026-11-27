@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Quiz — Pergunta</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Kalam:wght@400;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'Rubik',system-ui,sans-serif;color:#0B2A5B}
+a{color:#0866D6}a:hover{color:#0749A8}
+.papel{background-color:#FBFDFF;background-image:linear-gradient(rgba(10,127,250,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(10,127,250,.08) 1px,transparent 1px);background-size:24px 24px}
+.opcao{cursor:pointer;font:inherit;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+.opcao:hover{border-color:#8DBBF5}
+.opcao:active{transform:scale(.99)}
+.cta{background:#0D8519;box-shadow:0 5px 0 #075E10}
+.cta:hover{background:#0C7A17}
+.voltar{background:none;border:0;cursor:pointer;font:inherit}
+.voltar:hover{color:#0749A8}
+</style>
+</helmet>
+<div class="papel" style="width: 390px; height: 844px; box-sizing: border-box; padding: 16px 24px 28px; display: flex; flex-direction: column">
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 44px">
+    <a href="Main.dc.html" class="voltar" aria-label="Voltar para a pergunta anterior" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 8px 0 0; color: #0866D6; font-size: 15px; font-weight: 600; text-decoration: none">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      Voltar
+    </a>
+    <span style="font-size: 14px; font-weight: 600; color: #3A4F73">Pergunta <strong style="color: #0B2A5B">3</strong> de 10</span>
+  </header>
+
+  <div role="progressbar" aria-label="Progresso do quiz" aria-valuemin="1" aria-valuemax="10" aria-valuenow="3" style="margin-top: 8px; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px">
+    <span style="height: 8px; border-radius: 99px; background: #0A6DE6"></span>
+    <span style="height: 8px; border-radius: 99px; background: #0A6DE6"></span>
+    <span style="height: 8px; border-radius: 99px; background: #0A6DE6"></span>
+    <span style="height: 8px; border-radius: 99px; background: #DCEBFF"></span>
+    <span style="height: 8px; border-radius: 99px; background: #DCEBFF"></span>
+    <span style="height: 8px; border-radius: 99px; background: #DCEBFF"></span>
+    <span style="height: 8px; border-radius: 99px; background: #DCEBFF"></span>
+    <span style="height: 8px; border-radius: 99px; background: #DCEBFF"></span>
+    <span style="height: 8px; border-radius: 99px; background: #DCEBFF"></span>
+    <span style="height: 8px; border-radius: 99px; background: #DCEBFF"></span>
+  </div>
+
+  <p style="margin: 36px 0 0; font-family: 'Kalam', cursive; font-size: 18px; color: #0866D6; transform: rotate(-2deg); transform-origin: left">sobre a sua prática…</p>
+  <h1 style="margin: 6px 0 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 34px; line-height: 1.1; text-transform: uppercase; color: #0B2A5B">Quantos simulados completos você já fez?</h1>
+
+  <div role="radiogroup" aria-label="Alternativas" style="margin-top: 28px; display: flex; flex-direction: column; gap: 12px">
+    <sc-for list="{{ opcoes }}" as="op" hint-placeholder-count="4">
+      <button type="button" role="radio" aria-checked="{{ op.checked }}" class="opcao" onClick="{{ op.pick }}" style="{{ op.estilo }}">
+        <span style="{{ op.estiloLetra }}">{{ op.letra }}</span>
+        <span style="flex: 1; font-size: 16px; font-weight: 500; line-height: 1.35; color: #0B2A5B">{{ op.texto }}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+
+  <sc-if value="{{ temSelecao }}" hint-placeholder-val="{{ true }}">
+    <a href="QuizCaptura.dc.html" class="cta" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; border-radius: 999px; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase">
+      Próxima
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </sc-if>
+  <sc-if value="{{ semSelecao }}" hint-placeholder-val="{{ false }}">
+    <div aria-disabled="true" style="display: flex; align-items: center; justify-content: center; height: 60px; border-radius: 999px; background: #E3EAF4; color: #5B6B86; font-size: 17px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase">Escolha uma opção</div>
+  </sc-if>
+  <p style="margin: 14px 0 0; text-align: center; font-size: 13px; color: #3A4F73">Você pode voltar e mudar suas respostas.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { escolhida: 2 };
+  }
+  renderVals() {
+    var textos = ['Nenhum', '1 ou 2', 'De 3 a 5', 'Mais de 5'];
+    var letras = ['A', 'B', 'C', 'D'];
+    var self = this;
+    var opcoes = textos.map(function (t, i) {
+      var sel = self.state.escolhida === i;
+      return {
+        letra: letras[i],
+        texto: t,
+        checked: sel ? 'true' : 'false',
+        pick: function () { self.setState({ escolhida: i }); },
+        estilo: 'display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:12px 16px;border-radius:16px;border:2px solid ' + (sel ? '#0A6DE6' : '#DCEBFF') + ';background:' + (sel ? '#EAF3FF' : '#FFFFFF') + ';box-shadow:' + (sel ? '0 4px 0 #0A6DE6' : '0 2px 0 #DCEBFF'),
+        estiloLetra: 'flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;' + (sel ? 'background:#0A6DE6;color:#FFFFFF' : 'background:#DCEBFF;color:#0749A8')
+      };
+    });
+    var tem = this.state.escolhida !== null && this.state.escolhida !== undefined;
+    return { opcoes: opcoes, temSelecao: tem, semSelecao: !tem };
+  }
+}
+</script>
+</body>
+</html>

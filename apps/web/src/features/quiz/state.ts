@@ -7,17 +7,27 @@ export type QuizState = {
   /** questionId → optionId */
   answers: Record<string, string>
   result: SubmissionResult | null
+  /** Contato informado, para personalizar a tela de resultado. */
+  lead: LeadContact | null
 }
+
+export type LeadContact = { name: string; phone: string }
 
 export type QuizAction =
   | { type: 'sync'; quiz: PublicQuiz }
   | { type: 'answer'; questionId: string; optionId: string }
   | { type: 'next'; total: number }
   | { type: 'back' }
-  | { type: 'finish'; result: SubmissionResult }
+  | { type: 'finish'; result: SubmissionResult; lead: LeadContact }
   | { type: 'reset' }
 
-export const initialState: QuizState = { quizId: null, step: 0, answers: {}, result: null }
+export const initialState: QuizState = {
+  quizId: null,
+  step: 0,
+  answers: {},
+  result: null,
+  lead: null,
+}
 
 export const STORAGE_KEY = 'quiz-state-v1'
 
@@ -45,7 +55,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case 'back':
       return { ...state, step: Math.max(0, state.step - 1) }
     case 'finish':
-      return { ...state, result: action.result }
+      return { ...state, result: action.result, lead: action.lead }
     case 'reset':
       return initialState
   }
@@ -63,7 +73,8 @@ function isQuizState(value: unknown): value is QuizState {
     v.step >= 0 &&
     !!v.answers &&
     typeof v.answers === 'object' &&
-    (v.result === null || typeof v.result === 'object')
+    (v.result === null || typeof v.result === 'object') &&
+    (v.lead === null || typeof v.lead === 'object')
   )
 }
 

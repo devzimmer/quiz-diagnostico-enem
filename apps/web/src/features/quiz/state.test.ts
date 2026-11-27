@@ -16,6 +16,7 @@ const result: SubmissionResult = {
   score: 64,
   band: { slug: 'bom-caminho', label: 'Bom caminho', message: 'm' },
   answers: [],
+  bands: [],
 }
 
 class MemoryStorage implements Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> {
@@ -70,9 +71,11 @@ describe('quizReducer', () => {
     expect(quizReducer(s, { type: 'sync', quiz }).step).toBe(1)
   })
 
-  it('finish guarda o resultado; reset limpa tudo', () => {
-    const s = quizReducer(started, { type: 'finish', result })
+  it('finish guarda o resultado e o contato; reset limpa tudo', () => {
+    const lead = { name: 'Mariana Souza', phone: '11987654321' }
+    const s = quizReducer(started, { type: 'finish', result, lead })
     expect(s.result).toEqual(result)
+    expect(s.lead).toEqual(lead)
     expect(quizReducer(s, { type: 'reset' })).toEqual(initialState)
   })
 })

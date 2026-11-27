@@ -75,5 +75,11 @@ export async function submitQuiz(deps: Deps, input: SubmissionInput): Promise<Su
       question: a.questionText,
       option: a.optionText,
     })),
+    bands: quiz.bands.map(({ slug, label, minScore, maxScore }) => ({
+      slug,
+      label,
+      minScore,
+      maxScore,
+    })),
   }
 }

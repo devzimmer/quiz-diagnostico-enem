@@ -8,11 +8,15 @@ export type Band = { slug: string; label: string; message: string }
 
 export type SubmissionAnswerSummary = { position: number; question: string; option: string }
 
+export type BandRange = { slug: string; label: string; minScore: number; maxScore: number }
+
 export type SubmissionResult = {
   submissionId: string
   score: number
   band: Band
   answers: SubmissionAnswerSummary[]
+  /** Todas as faixas, para a régua do resultado. */
+  bands: BandRange[]
 }
 
 export type LeadListItem = {
@@ -36,8 +40,6 @@ export type LeadDetail = Omit<LeadListItem, 'band'> & {
   submissionCount: number
   answers: (SubmissionAnswerSummary & { weight: number })[]
 }
-
-export type BandRange = { slug: string; label: string; minScore: number; maxScore: number }
 
 export type AdminQuizSummary = {
   id: string

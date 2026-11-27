@@ -30,7 +30,7 @@ export function ConfirmDialog({
         <AlertDialog.Overlay className="fixed inset-0 z-50 bg-[rgba(11,42,91,0.5)] data-[state=open]:animate-in data-[state=open]:fade-in-0" />
         <AlertDialog.Content
           className={cn(
-            'fixed left-1/2 top-1/2 z-50 w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl data-[state=open]:animate-in data-[state=open]:zoom-in-95',
+            'fixed left-1/2 top-1/2 z-50 w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
             quiz ? 'font-sans text-tinta' : 'font-admin text-painel-texto',
           )}
         >

@@ -4,15 +4,9 @@ import { createSupabaseTokenVerifier } from './auth/verify-token'
 import type { VerifyToken } from './auth/types'
 import { createDb } from './db/client'
 import { DrizzleLeadQueryRepository } from './repositories/drizzle/lead-query-repository'
+import { DrizzleQuestionAdminRepository } from './repositories/drizzle/question-admin-repository'
 import { DrizzleQuizRepository } from './repositories/drizzle/quiz-repository'
 import { DrizzleSubmissionRepository } from './repositories/drizzle/submission-repository'
-
-const notImplemented = <T extends object>(name: string): T =>
-  new Proxy({} as T, {
-    get: () => () => {
-      throw new Error(`${name} ainda não implementado`)
-    },
-  })
 
 // Verificador criado uma vez por isolate para reaproveitar o cache do JWKS entre requests.
 let verifier: { key: string; verify: VerifyToken } | undefined
@@ -37,7 +31,7 @@ export function makeDeps(env: Env): AppDeps {
     quizRepo: new DrizzleQuizRepository(db),
     submissionRepo: new DrizzleSubmissionRepository(db),
     leadQueryRepo: new DrizzleLeadQueryRepository(db),
-    questionAdminRepo: notImplemented('questionAdminRepo'),
+    questionAdminRepo: new DrizzleQuestionAdminRepository(db),
     verifyToken: getVerifier(env),
     dispose: close,
   }

@@ -45,6 +45,12 @@ describe('submitQuiz', () => {
         { position: 1, question: 'Pergunta um?', option: 'Um B' },
         { position: 2, question: 'Pergunta dois?', option: 'Dois A' },
       ],
+      bands: [
+        { slug: 'ponto-de-partida', label: 'Ponto de partida', minScore: 0, maxScore: 30 },
+        { slug: 'em-construcao', label: 'Em construção', minScore: 31, maxScore: 55 },
+        { slug: 'bom-caminho', label: 'Bom caminho', minScore: 56, maxScore: 80 },
+        { slug: 'reta-final', label: 'Reta final', minScore: 81, maxScore: 100 },
+      ],
     })
   })
 

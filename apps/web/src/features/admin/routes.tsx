@@ -4,6 +4,8 @@ import { AuthProvider } from './auth/AuthProvider'
 import { LoginPage } from './auth/LoginPage'
 import { RequireAdmin } from './auth/RequireAdmin'
 import { AdminLayout } from './layout/AdminLayout'
+import { LeadDrawer } from './leads/LeadDrawer'
+import { LeadsPage } from './leads/LeadsPage'
 
 const EmBreve = ({ titulo }: { titulo: string }) => (
   <main className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6">
@@ -28,8 +30,13 @@ export const adminRoutes: RouteObject[] = [
           </RequireAdmin>
         ),
         children: [
-          { index: true, element: <EmBreve titulo="Leads" /> },
-          { path: 'leads/:id', element: <EmBreve titulo="Lead" /> },
+          {
+            element: <LeadsPage />,
+            children: [
+              { index: true, element: null },
+              { path: 'leads/:id', element: <LeadDrawer /> },
+            ],
+          },
           { path: 'perguntas', element: <EmBreve titulo="Perguntas" /> },
           { path: 'perguntas/nova', element: <EmBreve titulo="Nova pergunta" /> },
           { path: 'perguntas/:id', element: <EmBreve titulo="Editar pergunta" /> },

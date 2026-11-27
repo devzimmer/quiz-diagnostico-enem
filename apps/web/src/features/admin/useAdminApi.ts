@@ -15,7 +15,8 @@ export function useAdminApi(): AdminFetch {
         getToken: async () => (await supabase?.auth.getSession())?.data.session?.access_token,
         onUnauthorized: async () => {
           await signOut()
-          navigate('/admin/login?expired=1', { replace: true })
+          const next = encodeURIComponent(window.location.pathname + window.location.search)
+          navigate(`/admin/login?expired=1&next=${next}`, { replace: true })
         },
         onForbidden: () =>
           toast.error('Seu usuário não tem acesso ao painel.', { id: 'admin-forbidden' }),

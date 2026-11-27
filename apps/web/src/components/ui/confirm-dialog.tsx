@@ -12,6 +12,7 @@ export function ConfirmDialog({
   onConfirm,
   tone = 'admin',
   pending = false,
+  danger = false,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -22,6 +23,8 @@ export function ConfirmDialog({
   onConfirm: () => void
   tone?: 'quiz' | 'admin'
   pending?: boolean
+  /** Ação destrutiva (admin): botão vermelho. */
+  danger?: boolean
 }) {
   const quiz = tone === 'quiz'
   return (
@@ -68,7 +71,10 @@ export function ConfirmDialog({
               className={cn(
                 quiz
                   ? 'btn-cta h-12 text-[15px]'
-                  : 'h-10 rounded-[10px] bg-marca px-4 text-sm font-semibold text-white hover:bg-marca-hover disabled:opacity-60',
+                  : cn(
+                      'h-10 rounded-[10px] px-4 text-sm font-semibold text-white disabled:opacity-60',
+                      danger ? 'bg-[#B30B00] hover:bg-[#930900]' : 'bg-marca hover:bg-marca-hover',
+                    ),
               )}
             >
               {confirmLabel}

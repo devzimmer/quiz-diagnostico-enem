@@ -5,12 +5,6 @@ import { IntroPage } from './features/quiz/pages/IntroPage'
 import { QuestionPage } from './features/quiz/pages/QuestionPage'
 import { ResultPage } from './features/quiz/pages/ResultPage'
 
-const EmConstrucao = ({ nome }: { nome: string }) => (
-  <main className="grid min-h-dvh place-items-center bg-papel-grade p-6 text-center">
-    <h1 className="font-display text-4xl uppercase">{nome}</h1>
-  </main>
-)
-
 export const router = createBrowserRouter([
   {
     element: <QuizRoutesLayout />,
@@ -21,5 +15,9 @@ export const router = createBrowserRouter([
       { path: '/quiz/resultado', element: <ResultPage /> },
     ],
   },
-  { path: '/admin/*', element: <EmConstrucao nome="Admin" /> },
+  {
+    // O painel (e o supabase-js) só é baixado por quem acessa /admin.
+    path: '/admin/*',
+    lazy: () => import('./features/admin/routes').then((m) => ({ Component: m.AdminApp })),
+  },
 ])

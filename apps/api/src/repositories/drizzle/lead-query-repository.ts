@@ -1,9 +1,22 @@
 import type { LeadDetail, LeadListItem, LeadListQuery } from '@quiz/shared'
-import { type SQL, and, asc, count, desc, eq, ilike, isNotNull, or } from 'drizzle-orm'
+import {
+  type SQL,
+  and,
+  asc,
+  avg,
+  count,
+  desc,
+  eq,
+  gte,
+  ilike,
+  isNotNull,
+  or,
+  sql,
+} from 'drizzle-orm'
 import type { Database } from '../../db/client'
 import { leads, submissionAnswers, submissions } from '../../db/schema'
 import { escapeLike } from '../../lib/like'
-import type { LeadQueryRepository } from '../types'
+import type { LeadQueryRepository, LeadStatsRow } from '../types'
 
 const listColumns = {
   id: leads.id,
@@ -95,6 +108,39 @@ export class DrizzleLeadQueryRepository implements LeadQueryRepository {
       submittedAt: row.submittedAt.toISOString(),
       submissionCount: counts[0]?.total ?? 1,
       answers,
+    }
+  }
+
+  async getStatsRow({ timeZone, since }: { timeZone: string; since: Date }): Promise<LeadStatsRow> {
+    const withSubmission = isNotNull(leads.latestSubmissionId)
+    // dia do cadastro no fuso do negócio (não em UTC)
+    const day = sql<string>`to_char((${leads.createdAt} at time zone ${timeZone})::date, 'YYYY-MM-DD')`
+    const [totals, byBand, byDay] = await Promise.all([
+      this.db
+        .select({ total: count(), average: avg(submissions.score) })
+        .from(leads)
+        .innerJoin(submissions, eq(submissions.id, leads.latestSubmissionId))
+        .where(withSubmission),
+      this.db
+        .select({ slug: submissions.bandSlug, label: submissions.bandLabel, count: count() })
+        .from(leads)
+        .innerJoin(submissions, eq(submissions.id, leads.latestSubmissionId))
+        .where(withSubmission)
+        .groupBy(submissions.bandSlug, submissions.bandLabel),
+      this.db
+        .select({ date: day, count: count() })
+        .from(leads)
+        .where(and(withSubmission, gte(leads.createdAt, since)))
+        // pela posição: o fuso vira parâmetro ($1, $2…) e o Postgres não casaria as expressões
+        .groupBy(sql`1`)
+        .orderBy(sql`1`),
+    ])
+    const average = totals[0]?.average
+    return {
+      total: totals[0]?.total ?? 0,
+      averageScore: average == null ? null : Number(average),
+      byBand,
+      byDay,
     }
   }
 

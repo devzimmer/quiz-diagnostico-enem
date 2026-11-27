@@ -28,6 +28,7 @@ function setup() {
   const leadQueryRepo: LeadQueryRepository = {
     listLeads: vi.fn(async (_q: LeadListQuery) => ({ items: [item], total: 41 })),
     getLeadDetail: vi.fn(async (id: string) => (id === LEAD_ID ? detail : null)),
+    getStatsRow: vi.fn(),
   }
   const app = createApp(() => makeFakeDeps({ leadQueryRepo, verifyToken: fakeVerifyToken }))
   return { app, leadQueryRepo }

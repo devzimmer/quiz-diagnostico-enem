@@ -2,6 +2,7 @@ import { CircleAlert, Inbox, SearchX } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Outlet, useSearchParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { StatsPanel } from '../dashboard/StatsPanel'
 import { useDebouncedValue } from '../useDebouncedValue'
 import { LeadFilters } from './LeadFilters'
 import { LeadsTable, LeadsTableSkeleton } from './LeadsTable'
@@ -62,6 +63,8 @@ export function LeadsPage() {
           Contatos capturados pelo quiz de diagnóstico ENEM.
         </p>
       </div>
+
+      <StatsPanel />
 
       <section
         aria-label="Lista de leads"

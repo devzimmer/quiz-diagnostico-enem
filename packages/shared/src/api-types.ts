@@ -67,3 +67,15 @@ export type InactiveAdminQuestion = Omit<AdminQuestion, 'position'> & {
 }
 
 export type UpdateQuestionResult = { question: AdminQuestion; versioned: boolean }
+
+/** Indicadores do painel. Contagens por lead (vale o envio mais recente de cada um). */
+export type AdminStats = {
+  total: number
+  /** Leads cadastrados nos últimos 7 dias (contando hoje), no fuso de São Paulo. */
+  last7Days: number
+  /** Média das notas; `null` sem leads. */
+  averageScore: number | null
+  byBand: { slug: string; label: string; count: number }[]
+  /** Últimos 14 dias, do mais antigo para hoje; `date` = `YYYY-MM-DD` (São Paulo). */
+  byDay: { date: string; count: number }[]
+}

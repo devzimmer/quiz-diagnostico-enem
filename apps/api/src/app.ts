@@ -7,6 +7,7 @@ import { HttpError } from './lib/http-error'
 import { requireAdmin } from './middleware/require-admin'
 import { adminLeadRoutes } from './routes/admin-leads'
 import { adminQuizRoutes } from './routes/admin-quiz'
+import { adminStatsRoutes } from './routes/admin-stats'
 import { publicRoutes } from './routes/public'
 
 export function createApp(makeDeps: (env: Env) => AppDeps) {
@@ -48,6 +49,7 @@ export function createApp(makeDeps: (env: Env) => AppDeps) {
   app.use('/api/v1/admin/*', requireAdmin())
   app.route('/api/v1/admin', adminLeadRoutes)
   app.route('/api/v1/admin', adminQuizRoutes)
+  app.route('/api/v1/admin', adminStatsRoutes)
 
   app.notFound((c) => c.json(new HttpError(404, 'NOT_FOUND', 'Rota não encontrada').toBody(), 404))
 

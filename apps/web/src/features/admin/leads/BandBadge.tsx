@@ -8,9 +8,10 @@ const BAND_STYLES: Record<string, string> = {
   'reta-final': 'bg-[#D6F5E0] text-[#065E28]',
 }
 
+/** Cores das barras por faixa (validadas para daltonismo; sempre com rótulo ao lado). */
 export const BAND_BAR_COLORS: Record<string, string> = {
-  'ponto-de-partida': '#E6761A',
-  'em-construcao': '#E8C21A',
+  'ponto-de-partida': '#C2410C',
+  'em-construcao': '#C99A06',
   'bom-caminho': '#0A6DE6',
   'reta-final': '#0C6E32',
 }

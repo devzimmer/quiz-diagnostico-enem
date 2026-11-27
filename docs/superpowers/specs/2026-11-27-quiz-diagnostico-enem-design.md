@@ -110,7 +110,9 @@ options         id uuid PK, question_id FK→questions, position int, text text,
                 UNIQUE (question_id, position)
 result_bands    id uuid PK, quiz_id FK→quizzes, slug text, label text, message text,
                 min_score int, max_score int, CHECK (min_score <= max_score)
-leads           id uuid PK, name text, email citext UNIQUE, phone text (só dígitos),
+leads           id uuid PK, name text, email text UNIQUE (sempre minúsculo, normalizado
+                pelo schema), phone text (só dígitos),
+                latest_submission_id FK→submissions NULL,   -- envio mais recente
                 created_at, updated_at
 submissions     id uuid PK, lead_id FK→leads, quiz_id FK→quizzes,
                 score int CHECK (0..100), raw_points int, max_points int,
@@ -163,7 +165,7 @@ Formato de erro único: `{ "error": { "code": string, "message": string, "detail
 | `POST /submissions` | — | 201 `{submissionId, score, band:{slug,label,message}, answers:[{position, question, option}]}` | 400 JSON malformado; 409 `LEAD_ALREADY_SUBMITTED` (e-mail já tem envio e `confirmReplace` não veio `true`); 422 validação (campos do lead, pergunta sem resposta, resposta duplicada, alternativa que não pertence à pergunta ou ao quiz ativo); 429 rate limit (diferencial) |
 | `GET /admin/leads?search=&band=&page=&pageSize=` | admin | 200 `{data:[{id,name,email,phone,score,band,createdAt}], pagination:{page,pageSize,total}}` | 401, 403, 422 parâmetros inválidos |
 | `GET /admin/leads/:id` | admin | 200 lead + último envio com as respostas | 401, 403, 404 |
-| `GET /admin/quiz` | admin | 200 resumo do quiz ativo: `{id, title, maxPoints, activeCount, inactiveCount}` | 401, 403 |
+| `GET /admin/quiz` | admin | 200 resumo do quiz ativo: `{id, title, maxPoints, activeCount, inactiveCount, bands:[{slug,label,minScore,maxScore}]}` (as faixas alimentam o filtro da lista de leads) | 401, 403 |
 | `GET /admin/quiz/questions?status=active\|inactive` | admin | 200 perguntas do status pedido (padrão `active`), com alternativas **com pesos** e `answerCount`. Ativas por `position`; inativas por `deactivatedAt desc`, cada uma com `inactiveReason: "replaced" \| "deactivated"`, `deactivatedAt` e, se substituída, `replacedBy: {id, position}` | 401, 403, 422 status inválido |
 | `POST /admin/quiz/questions` | admin | 201 pergunta criada no fim da lista | 401, 403, 422 |
 | `PUT /admin/quiz/questions/:id` | admin | 200 `{question, versioned}` — `versioned: true` quando a regra criou uma nova versão (novo `id`) | 401, 403, 404, 409 se a pergunta já está inativa, 422 |

@@ -4,6 +4,7 @@ import { HTTPException } from 'hono/http-exception'
 import type { AppDeps, AppEnv } from './deps'
 import type { Env } from './env'
 import { HttpError } from './lib/http-error'
+import { publicRoutes } from './routes/public'
 
 export function createApp(makeDeps: (env: Env) => AppDeps) {
   const app = new Hono<AppEnv>()
@@ -40,6 +41,7 @@ export function createApp(makeDeps: (env: Env) => AppDeps) {
   })
 
   app.get('/api/v1/health', (c) => c.json({ status: 'ok' }))
+  app.route('/api/v1', publicRoutes)
 
   app.notFound((c) => c.json(new HttpError(404, 'NOT_FOUND', 'Rota não encontrada').toBody(), 404))
 

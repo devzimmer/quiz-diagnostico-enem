@@ -59,12 +59,17 @@ a{color:#0021E1}a:hover{color:#00179E}
       <p style="margin: 0">Perguntas que já têm respostas nunca são sobrescritas: ao editar, criamos uma nova versão e o histórico dos leads continua apontando para a versão que eles viram. Desativar tira a pergunta do quiz sem apagar nada.</p>
     </div>
 
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: #3B4866">
-      <span><strong style="color: #14254D">10</strong> perguntas ativas</span>
-      <span aria-hidden="true">·</span>
-      <span>Pontuação máxima atual: <strong style="color: #14254D">100 pontos</strong> (soma do maior peso de cada pergunta; a nota final é sempre convertida para 0–100)</span>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <div role="tablist" aria-label="Filtrar perguntas por status" style="display: inline-flex; padding: 4px; gap: 4px; border-radius: 12px; background: #E6EAF2">
+        <button type="button" role="tab" aria-selected="{{ abaAtivasSel }}" onClick="{{ irAtivas }}" style="{{ estiloAbaAtivas }}">Ativas <span style="{{ estiloContaAtivas }}">10</span></button>
+        <button type="button" role="tab" aria-selected="{{ abaDesativadasSel }}" onClick="{{ irDesativadas }}" style="{{ estiloAbaDesativadas }}">Desativadas <span style="{{ estiloContaDesativadas }}">3</span></button>
+      </div>
+      <sc-if value="{{ abaAtivas }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size: 14px; color: #3B4866">Pontuação máxima atual: <strong style="color: #14254D">100 pontos</strong></span>
+      </sc-if>
     </div>
 
+    <sc-if value="{{ abaAtivas }}" hint-placeholder-val="{{ true }}">
     <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
       <sc-for list="{{ perguntas }}" as="p" hint-placeholder-count="10">
         <li style="background: #FFFFFF; border: 1px solid #E2E7F0; border-radius: 14px; padding: 16px; display: flex; gap: 14px; align-items: flex-start">
@@ -106,12 +111,70 @@ a{color:#0021E1}a:hover{color:#00179E}
         </li>
       </sc-for>
     </ol>
+    <p style="margin: 0; font-size: 13px; color: #5A6680">A pontuação máxima é a soma do maior peso de cada pergunta ativa. A nota do lead é sempre convertida para 0–100.</p>
+    </sc-if>
+
+    <sc-if value="{{ abaDesativadas }}" hint-placeholder-val="{{ false }}">
+    <p style="margin: 0; font-size: 14px; color: #3B4866">Perguntas fora do quiz. Elas continuam guardadas porque há leads que as responderam.</p>
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+      <sc-for list="{{ inativas }}" as="p" hint-placeholder-count="3">
+        <li style="background: #FBFCFE; border: 1px solid #E2E7F0; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+            <div style="min-width: 0; flex: 1 1 320px; display: flex; flex-direction: column; gap: 6px">
+              <span style="{{ p.estiloMotivo }}">{{ p.motivo }}</span>
+              <p style="margin: 0; font-size: 16px; font-weight: 600; line-height: 1.4; color: #3B4866">{{ p.texto }}</p>
+              <p style="margin: 0; font-size: 13px; color: #5A6680">{{ p.meta }}</p>
+            </div>
+            <sc-if value="{{ p.podeReativar }}" hint-placeholder-val="{{ true }}">
+              <button type="button" class="sec" style="height: 36px; padding: 0 12px; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #14254D">
+                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 1 0 2.3-5.7M4 4v5h5"/></svg>
+                Reativar
+              </button>
+            </sc-if>
+          </div>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px">
+            <sc-for list="{{ p.opcoes }}" as="o" hint-placeholder-count="4">
+              <li style="display: inline-flex; align-items: center; gap: 8px; padding: 5px 6px 5px 10px; border-radius: 8px; background: #F4F6FA; border: 1px solid #E8ECF3; font-size: 13px; color: #3B4866">
+                {{ o.texto }}
+                <span style="padding: 1px 7px; border-radius: 6px; background: #FFFFFF; border: 1px solid #DCE2EC; font-size: 12px; font-weight: 700; color: #14254D; font-variant-numeric: tabular-nums">{{ o.peso }}</span>
+              </li>
+            </sc-for>
+          </ul>
+        </li>
+      </sc-for>
+    </ol>
+    </sc-if>
   </main>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
 class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { aba: 'ativas' };
+  }
   renderVals() {
+    var self = this;
+    var ativas = this.state.aba === 'ativas';
+    var estiloAba = function (sel) {
+      return 'height:40px;padding:0 14px;border:0;border-radius:9px;cursor:pointer;font:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;' + (sel ? 'background:#FFFFFF;color:#14254D;box-shadow:0 1px 3px rgba(20,37,77,.12)' : 'background:transparent;color:#3B4866');
+    };
+    var estiloConta = function (sel) {
+      return 'padding:1px 8px;border-radius:99px;font-size:12px;font-weight:700;' + (sel ? 'background:#0021E1;color:#FFFFFF' : 'background:#D5DCE8;color:#14254D');
+    };
+    var motivoSubst = 'display:inline-flex;align-self:flex-start;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:600;background:#EEF1FE;color:#1E2F99';
+    var motivoDesat = 'display:inline-flex;align-self:flex-start;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:600;background:#EEF0F4;color:#3B4866';
+    var inat = [
+      ['Substituída pela versão atual da pergunta 6 em 20/11/2026', motivoSubst, false, 'Qual é a sua maior dificuldade hoje?', '185 respostas', [['Não consigo me organizar nem manter constância', 2], ['Matemática e Ciências da Natureza', 5], ['Linguagens e Ciências Humanas', 7], ['Não tenho dificuldade específica, quero melhorar no geral', 10]]],
+      ['Desativada em 10/11/2026', motivoDesat, true, 'Você costuma estudar sozinho ou em grupo?', '37 respostas', [['Só sozinho', 3], ['Mais sozinho, às vezes em grupo', 5], ['Mais em grupo', 5], ['Só em grupo', 3]]],
+      ['Desativada em 05/11/2026', motivoDesat, true, 'Você já usou alguma plataforma de estudos online?', '12 respostas', [['Nunca usei', 0], ['Já usei, mas parei', 3], ['Uso de vez em quando', 6], ['Uso toda semana', 10]]]
+    ];
+    var inativas = inat.map(function (d) {
+      return {
+        motivo: d[0], estiloMotivo: d[1], podeReativar: d[2], texto: d[3], meta: d[4],
+        opcoes: d[5].map(function (o) { return { texto: o[0], peso: o[1] + ' pts' }; })
+      };
+    });
     var q = [
       ['Em que etapa dos estudos você está?', [['Estou no 1º ou 2º ano do ensino médio', 2], ['Estou no 3º ano', 5], ['Já terminei o ensino médio e estudo por conta', 7], ['Já terminei e faço cursinho', 10]], '248 respostas'],
       ['Quantas horas por semana você estuda além da escola/cursinho?', [['Menos de 2 horas', 0], ['De 3 a 6 horas', 4], ['De 7 a 14 horas', 7], ['15 horas ou mais', 10]], '248 respostas'],
@@ -126,6 +189,17 @@ class Component extends DCLogic {
     ];
     var total = q.length;
     return {
+      abaAtivas: ativas,
+      abaDesativadas: !ativas,
+      abaAtivasSel: ativas ? 'true' : 'false',
+      abaDesativadasSel: ativas ? 'false' : 'true',
+      irAtivas: function () { self.setState({ aba: 'ativas' }); },
+      irDesativadas: function () { self.setState({ aba: 'desativadas' }); },
+      estiloAbaAtivas: estiloAba(ativas),
+      estiloAbaDesativadas: estiloAba(!ativas),
+      estiloContaAtivas: estiloConta(ativas),
+      estiloContaDesativadas: estiloConta(!ativas),
+      inativas: inativas,
       perguntas: q.map(function (item, i) {
         return {
           n: i + 1,

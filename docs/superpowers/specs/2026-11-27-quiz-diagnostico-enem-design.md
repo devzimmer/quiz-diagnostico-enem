@@ -100,8 +100,10 @@ packages/shared: schemas Zod de entrada (lead, envio), tipos de resposta da API
 ```
 quizzes         id uuid PK, slug text UNIQUE, title text, is_active bool, created_at
 questions       id uuid PK, quiz_id FK→quizzes, position int, text text,
-                is_active bool, previous_version_id FK→questions NULL,
+                is_active bool, deactivated_at timestamptz NULL,
+                previous_version_id FK→questions NULL,
                 created_at, updated_at
+                CHECK (is_active = (deactivated_at IS NULL))
                 UNIQUE (quiz_id, position) WHERE is_active   -- índice parcial
 options         id uuid PK, question_id FK→questions, position int, text text,
                 weight int CHECK (weight BETWEEN 0 AND 100)
@@ -131,6 +133,8 @@ Decisões de modelagem:
   - Reordenar só muda `position` das perguntas ativas; não gera versão.
   - Toda a operação roda em transação. As FKs de `submission_answers` para perguntas e alternativas são `ON DELETE RESTRICT`: o próprio banco recusa apagar conteúdo já respondido, mesmo fora da API.
   - O quiz público mostra só perguntas ativas, por `position`; o total de perguntas pode variar e o progresso usa esse total.
+  - Uma pergunta inativa tem um de dois motivos, derivado dos dados (sem coluna extra): **substituída** (existe outra pergunta com `previous_version_id` = ela) ou **desativada** (saiu do quiz manualmente).
+  - **Reativar** vale só para pergunta desativada: volta para o fim da lista, com o mesmo conteúdo (não gera versão). Pergunta substituída não pode ser reativada (é histórico); para voltar ao conteúdo antigo, edita-se a versão atual.
 - **Snapshot nas respostas e na faixa.** Texto da pergunta, da alternativa, peso e faixa são copiados no momento do envio. Com o versionamento isso é redundante para edições feitas pela API, mas deixa a leitura do detalhe do lead sem joins e protege contra edição direta no banco.
 - **Faixas no banco**, não no código: rótulos e mensagens também são conteúdo de marketing.
 - **Telefone normalizado** para dígitos (`11987654321`); formatação é responsabilidade da UI.
@@ -159,10 +163,12 @@ Formato de erro único: `{ "error": { "code": string, "message": string, "detail
 | `POST /submissions` | — | 201 `{submissionId, score, band:{slug,label,message}, answers:[{position, question, option}]}` | 400 JSON malformado; 409 `LEAD_ALREADY_SUBMITTED` (e-mail já tem envio e `confirmReplace` não veio `true`); 422 validação (campos do lead, pergunta sem resposta, resposta duplicada, alternativa que não pertence à pergunta ou ao quiz ativo); 429 rate limit (diferencial) |
 | `GET /admin/leads?search=&band=&page=&pageSize=` | admin | 200 `{data:[{id,name,email,phone,score,band,createdAt}], pagination:{page,pageSize,total}}` | 401, 403, 422 parâmetros inválidos |
 | `GET /admin/leads/:id` | admin | 200 lead + último envio com as respostas | 401, 403, 404 |
-| `GET /admin/quiz` | admin | 200 quiz ativo com perguntas ativas, alternativas **com pesos**, `answerCount` por pergunta e `maxPoints` atual | 401, 403 |
+| `GET /admin/quiz` | admin | 200 resumo do quiz ativo: `{id, title, maxPoints, activeCount, inactiveCount}` | 401, 403 |
+| `GET /admin/quiz/questions?status=active\|inactive` | admin | 200 perguntas do status pedido (padrão `active`), com alternativas **com pesos** e `answerCount`. Ativas por `position`; inativas por `deactivatedAt desc`, cada uma com `inactiveReason: "replaced" \| "deactivated"`, `deactivatedAt` e, se substituída, `replacedBy: {id, position}` | 401, 403, 422 status inválido |
 | `POST /admin/quiz/questions` | admin | 201 pergunta criada no fim da lista | 401, 403, 422 |
 | `PUT /admin/quiz/questions/:id` | admin | 200 `{question, versioned}` — `versioned: true` quando a regra criou uma nova versão (novo `id`) | 401, 403, 404, 409 se a pergunta já está inativa, 422 |
 | `DELETE /admin/quiz/questions/:id` | admin | 204 (desativa) | 401, 403, 404, 422 se for a última ativa |
+| `POST /admin/quiz/questions/:id/reactivate` | admin | 200 pergunta reativada no fim da lista | 401, 403, 404, 409 se já está ativa ou se foi substituída |
 | `PUT /admin/quiz/question-order` | admin | 200 com `{questionIds: [...]}` na nova ordem (deve conter exatamente as perguntas ativas) | 401, 403, 422 |
 | `GET /admin/stats` (diferencial) | admin | 200 `{total, last7Days, averageScore, byBand:[…], byDay:[…14 dias]}` | 401, 403 |
 | `GET /admin/leads/export.csv` (diferencial) | admin | 200 `text/csv` respeitando filtros | 401, 403 |
@@ -201,7 +207,7 @@ A tela `/admin` do canvas inclui indicadores e gráficos: eles pertencem ao dife
 | `/admin/login` | Login |
 | `/admin` | Leads: indicadores, gráficos, busca, filtro, tabela, paginação |
 | `/admin/leads/:id` | Drawer de detalhe sobre a lista (rota aninhada, URL compartilhável) |
-| `/admin/perguntas` | Editor: lista de perguntas ativas com alternativas e pesos, contagem de respostas, subir/descer, editar, desativar, nova pergunta, pontuação máxima atual |
+| `/admin/perguntas` | Editor com filtro **Ativas \| Desativadas** (com contagem; filtro na query string, `?status=desativadas`). Ativas: alternativas e pesos, contagem de respostas, subir/descer, editar, desativar, nova pergunta, pontuação máxima atual. Desativadas: somente leitura, com o motivo ("Substituída pela versão atual da pergunta N em dd/mm" ou "Desativada em dd/mm"), contagem de respostas e botão **Reativar** só nas desativadas manualmente |
 | `/admin/perguntas/:id` e `/admin/perguntas/nova` | Drawer de edição: texto, alternativas (texto + peso), adicionar/remover alternativa; se a pergunta tem respostas, aviso de que salvar cria nova versão e confirmação antes de salvar |
 
 - Quiz segue a linguagem da LP (Anton/Rubik/Kalam, papel quadriculado, amarelo marca-texto, CTA verde pílula). Admin segue o institucional (Inter, azul `#0021E1`).
@@ -213,7 +219,7 @@ A tela `/admin` do canvas inclui indicadores e gráficos: eles pertencem ao dife
 ## 12. Testes
 
 - **Unitários (Vitest):** cálculo de pontuação e faixa; schema do lead (casos válidos e inválidos de nome, e-mail, telefone/DDD).
-- **Versionamento:** editar pergunta sem respostas altera no lugar; com respostas cria versão nova e desativa a antiga; não deixa desativar a última ativa; reordenação rejeita lista que não bate com as ativas.
+- **Versionamento:** editar pergunta sem respostas altera no lugar; com respostas cria versão nova e desativa a antiga; não deixa desativar a última ativa; reordenação rejeita lista que não bate com as ativas; reativar coloca no fim e recusa pergunta substituída.
 - **Rotas da API:** `POST /submissions` (201, 409, 422 por motivo) e proteção admin (401/403/200) via `app.request` do Hono com repositório fake e verificação de JWT substituível.
 - Front: sem testes automatizados, salvo tempo sobrando.
 
